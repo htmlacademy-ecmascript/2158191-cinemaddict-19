@@ -13,25 +13,42 @@ export default class FilmsPresenter {
   filmListComponent = new FilmListView();
   filmListContainerComponent = new FilmListContainerView();
   contentComponent = new ContentView();
-  constructor(headerProfile, mainContainer, footer) {
+  constructor({headerProfile, mainContainer, footer}) {
     this.mainContainer = mainContainer;
     this.headerProfile = headerProfile;
     this.footer = footer;
   }
 
-  init() {
+  renderHeaderProfile() {
     render(new ProfileRatingView(), this.headerProfile);
+  }
+
+  renderMenuAndSort() {
     render(new MenuView(), this.mainContainer);
     render(new SortView(), this.mainContainer);
+  }
+
+  renderMainContent() {
     render(this.contentComponent, this.mainContainer);
     render(this.filmListComponent, this.contentComponent.getElement());
     render(this.filmListContainerComponent, this.filmListComponent.getElement());
-    render(new FooterStatisticsView(), this.footer);
 
     for (let i = 0; i < 5; i++) {
       render(new FilmCardView(), this.filmListContainerComponent.getElement());
     }
 
     render(new ShowMoreButtonView(), this.filmListContainerComponent.getElement());
+  }
+
+
+  renderFooterStatistics() {
+    render(new FooterStatisticsView(), this.footer);
+  }
+
+  init() {
+    this.renderHeaderProfile();
+    this.renderMenuAndSort();
+    this.renderMainContent();
+    this.renderFooterStatistics();
   }
 }
