@@ -13,4 +13,3 @@ export const EMOTIONS = {
   sleeping: './public/images/emoji/sleeping.png',
   smile: './public/images/emoji/smile.png',
 };
-

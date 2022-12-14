@@ -64,8 +64,8 @@ const mockMovies = [
       writers: 'Takeshi Kitano',
       actors: 'Morgan Freeman',
       release: {
-        'date': '2019-05-11T00:00:00.000Z',
-        'release_country': 'Finland'
+        date: '2019-05-11T00:00:00.000Z',
+        releaseCountry: 'Finland'
       },
       duration: 77,
       genre: 'Comedy',
@@ -92,8 +92,8 @@ const mockMovies = [
       writers: 'Jerry Bruckheimer',
       actors: 'Stephen Graham, Kaya Scodelario, Golshifteh Farahani, Johnny Depp',
       release: {
-        'date': '2017-05-11T00:00:00.000Z',
-        'release_country': 'USA'
+        date: '2017-05-11T00:00:00.000Z',
+        releaseCountry: 'USA'
       },
       duration: 97,
       genre: 'Action, Adventure, Comedy',
@@ -120,8 +120,8 @@ const mockMovies = [
       writers: 'Christopher Markus, Stephen McFeely',
       actors: 'Robert Downey Jr., Chris Evans, Mark Ruffalo, Chris Hemsworth, Scarlett Johansson',
       release: {
-        'date': '2019-04-26T00:00:00.000Z',
-        'release_country': 'USA'
+        date: '2019-04-26T00:00:00.000Z',
+        releaseCountry: 'USA'
       },
       duration: 181,
       genre: 'Action, Adventure, Science Fiction',
@@ -148,8 +148,8 @@ const mockMovies = [
       writers: 'Derek Connolly, Colin Trevorrow, Chris Terrio, J.J. Abrams',
       actors: 'Carrie Fisher, Mark Hamill, Adam Driver, Daisy Ridley, John Boyega',
       release: {
-        'date': '2019-12-20T00:00:00.000Z',
-        'release_country': 'USA'
+        date: '2019-12-20T00:00:00.000Z',
+        releaseCountry: 'USA'
       },
       duration: 142,
       genre: 'Action, Adventure, Science Fiction',
@@ -176,8 +176,8 @@ const mockMovies = [
       writers: 'Qui Nguyen, Adele Lim',
       actors: 'Kelly Marie Tran, Awkwafina',
       release: {
-        'date': '2021-03-5T00:00:00.000Z',
-        'release_country': 'Finland'
+        date: '2021-03-5T00:00:00.000Z',
+        releaseCountry: 'Finland'
       },
       duration: 90,
       genre: 'Action-Adventure, Animation, Family, Fantasy',
@@ -204,8 +204,8 @@ const mockMovies = [
       writers: 'Linda Woolverton',
       actors: 'Johnny Depp, Mia Wasikowska, Helena Bonham Carter',
       release: {
-        'date': '2016-05-27T00:00:00.000Z',
-        'release_country': 'Australia'
+        date: '2016-05-27T00:00:00.000Z',
+        releaseCountry: 'Australia',
       },
       duration: 100,
       genre: 'Adventure, Fantasy, Live Action',
