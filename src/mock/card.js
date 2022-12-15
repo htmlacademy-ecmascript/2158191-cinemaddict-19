@@ -96,7 +96,7 @@ const mockMovies = [
         releaseCountry: 'USA'
       },
       duration: 97,
-      genre: 'Action, Adventure, Comedy',
+      genre: 'Adventure',
       description: 'The rip-roaring adventure finds down-on-his-luck Captain Jack feeling the winds of ill-fortune blowing strongly his way when deadly ghost sailors, led by the terrifying Captain Salazar (Javier Bardem), escape from the Devil\'s Triangle bent on killing every pirate at sea—notably Jack.'
     },
     userDetails: {
@@ -124,7 +124,7 @@ const mockMovies = [
         releaseCountry: 'USA'
       },
       duration: 181,
-      genre: 'Action, Adventure, Science Fiction',
+      genre: 'Action',
       description: 'The grave course of events set in motion by Thanos that wiped out half the universe and fractured the Avengers ranks compels the remaining Avengers to take one final stand.'
     },
     userDetails: {
@@ -152,7 +152,7 @@ const mockMovies = [
         releaseCountry: 'USA'
       },
       duration: 142,
-      genre: 'Action, Adventure, Science Fiction',
+      genre: 'Adventure',
       description: 'In Star Wars: The Rise of Skywalker, the riveting conclusion of the landmark Skywalker saga, new legends will be born—and the final battle for freedom is yet to come.'
     },
     userDetails: {
@@ -180,7 +180,7 @@ const mockMovies = [
         releaseCountry: 'Finland'
       },
       duration: 90,
-      genre: 'Action-Adventure, Animation, Family, Fantasy',
+      genre: 'Action-Adventure',
       description: 'Humans and dragons lived together in harmony long ago. But when an evil force threatened the land, the dragons sacrificed themselves to save humanity.'
     },
     userDetails: {
@@ -208,7 +208,7 @@ const mockMovies = [
         releaseCountry: 'Australia',
       },
       duration: 100,
-      genre: 'Adventure, Fantasy, Live Action',
+      genre: 'Fantasy',
       description: 'Alice returns to the whimsical world of Underland and travels back in time to save the Mad Hatter.'
     },
     userDetails: {

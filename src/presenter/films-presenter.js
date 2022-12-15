@@ -13,10 +13,12 @@ export default class FilmsPresenter {
   filmListComponent = new FilmListView();
   filmListContainerComponent = new FilmListContainerView();
   contentComponent = new ContentView();
-  constructor({headerProfile, mainContainer, footer}) {
+
+  constructor({headerProfile, mainContainer, footer, moviesModel}) {
     this.mainContainer = mainContainer;
     this.headerProfile = headerProfile;
     this.footer = footer;
+    this.moviesModel = moviesModel;
   }
 
   renderHeaderProfile() {
@@ -33,8 +35,8 @@ export default class FilmsPresenter {
     render(this.filmListComponent, this.contentComponent.getElement());
     render(this.filmListContainerComponent, this.filmListComponent.getElement());
 
-    for (let i = 0; i < 5; i++) {
-      render(new FilmCardView(), this.filmListContainerComponent.getElement());
+    for (let i = 0; i < this.moviesData.length; i++) {
+      render(new FilmCardView(this.moviesData[i]), this.filmListContainerComponent.getElement());
     }
 
     render(new ShowMoreButtonView(), this.filmListContainerComponent.getElement());
@@ -46,6 +48,8 @@ export default class FilmsPresenter {
   }
 
   init() {
+    this.moviesData = [...this.moviesModel.getMovies()];
+
     this.renderHeaderProfile();
     this.renderMenuAndSort();
     this.renderMainContent();

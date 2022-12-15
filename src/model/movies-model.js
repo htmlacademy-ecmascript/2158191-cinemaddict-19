@@ -5,7 +5,7 @@ const CARD_COUNT = 5;
 export default class MoviesModel {
   movies = Array.from({length: CARD_COUNT}, getRandomMovie);
 
-  getMovie() {
+  getMovies() {
     return this.movies;
   }
 }

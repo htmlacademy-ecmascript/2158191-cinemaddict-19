@@ -2,8 +2,8 @@ import { createElement } from '../render.js';
 import { humanizeReleaseDate } from '../utile.js';
 import { convertTimeFormat } from '../utile.js';
 
-function createFilmCardTemplate(movie) {
-  const {title, poster, comments, totalRating, release, genre, duration, description, userDetails } = movie;
+function createFilmCardTemplate(movieInfo) {
+  const {comments, filmInfo: {title, poster, totalRating, release, genre, duration, description}, userDetails } = movieInfo;
 
   const releaseYear = humanizeReleaseDate(release.date).slice(-4);
   const filmDuration = convertTimeFormat(duration);
@@ -36,12 +36,12 @@ function createFilmCardTemplate(movie) {
 }
 
 export default class FilmCardView {
-  constructor({movie}) {
-    this.movie = movie;
+  constructor(movieInfo) {
+    this.movieInfo = movieInfo;
   }
 
   getTemplate() {
-    return createFilmCardTemplate(this.movie);
+    return createFilmCardTemplate(this.movieInfo);
   }
 
   getElement() {
