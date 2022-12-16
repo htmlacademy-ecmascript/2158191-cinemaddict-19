@@ -2,8 +2,7 @@ import {createElement} from '../../render.js';
 import {humanizeReleaseDate} from '../../utile.js';
 import {convertTimeFormat} from '../../utile.js';
 
-function createPopupFilmInfoTemplate(movieInfo) {
-  const {filmInfo: {title, alternativeTitle, poster, totalRating, release, genre, duration, description, ageRating, actors, writers, director}, userDetails } = movieInfo;
+function createPopupFilmInfoTemplate({filmInfo: {title, alternativeTitle, poster, totalRating, release, genre, duration, description, ageRating, actors, writers, director}, userDetails }) {
 
   const releaseDate = humanizeReleaseDate(release.date);
   const filmDuration = convertTimeFormat(duration);

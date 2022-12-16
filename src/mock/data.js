@@ -2,7 +2,7 @@ import { getRandomArrayElement } from '../utile.js';
 import { POSTERS } from '../const.js';
 
 export const mockComments = [{
-  id: 0,
+  id: '0',
   author: 'Ilya Reilly',
   comment: 'a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.',
   date: '2019-05-11T16:12:32.554Z',
@@ -10,7 +10,7 @@ export const mockComments = [{
 },
 
 {
-  id: 1,
+  id: '1',
   author: 'Piter Parker',
   comment: 'This film much worse than mine',
   date: '2021-01-09T16:12:32.554Z',
@@ -18,7 +18,7 @@ export const mockComments = [{
 },
 
 {
-  id: 2,
+  id: '2',
   author: 'Zmei Gorynych',
   comment: 'Turn this sh*t off after 5 minutes',
   date: '2021-09-11T12:12:32.554Z',
@@ -26,7 +26,7 @@ export const mockComments = [{
 },
 
 {
-  id: 3,
+  id: '3',
   author: 'Volchara',
   comment: 'This film is awesome',
   date: '2019-05-11T16:12:32.554Z',
@@ -34,7 +34,7 @@ export const mockComments = [{
 },
 
 {
-  id: 4,
+  id: '4',
   author: 'Donald Trump',
   comment: 'Biden must see this',
   date: '2022-05-11T14:13:32.554Z',
@@ -42,7 +42,7 @@ export const mockComments = [{
 },
 
 {
-  id: 5,
+  id: '5',
   author: 'Rihanna',
   comment: 'Shine bright like a diamond',
   date: '2021-05-11T19:12:32.554Z',

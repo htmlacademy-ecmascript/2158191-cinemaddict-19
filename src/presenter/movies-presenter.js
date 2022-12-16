@@ -67,7 +67,7 @@ export default class MoviesPresenter {
     render(new PopupNewCommentView(), this.popupCommentsContainer.getElement());
     if(this.moviesData[0].comments.length) {
       for (let i = 0; i < this.moviesData[0].comments.length; i++) {
-        render(new PopupCommentsView(this.moviesData[0].comments[i]), this.popupCommentsListContainer.getElement());
+        render(new PopupCommentsView(this.moviesModel.getComments()[i]), this.popupCommentsListContainer.getElement());
       }
     }
   }

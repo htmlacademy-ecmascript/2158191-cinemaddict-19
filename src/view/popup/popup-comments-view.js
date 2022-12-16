@@ -2,9 +2,7 @@ import { humanizeCommentDate } from '../../utile.js';
 import {createElement} from '../../render.js';
 import { EMOTIONS } from '../../const.js';
 
-function createPopupCommentTemplate(commentsData) {
-  const {author, comment, date, emotion} = commentsData;
-
+function createPopupCommentTemplate({author, comment, date, emotion}) {
   const commentDate = humanizeCommentDate(date);
   const commentEmoji = EMOTIONS[emotion];
 

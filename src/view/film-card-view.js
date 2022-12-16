@@ -2,9 +2,7 @@ import { createElement } from '../render.js';
 import { humanizeReleaseDate } from '../utile.js';
 import { convertTimeFormat } from '../utile.js';
 
-function createFilmCardTemplate(movieInfo) {
-  const {comments, filmInfo: {title, poster, totalRating, release, genre, duration, description}, userDetails } = movieInfo;
-
+function createFilmCardTemplate({comments, filmInfo: {title, poster, totalRating, release, genre, duration, description}, userDetails }) {
   const releaseYear = humanizeReleaseDate(release.date).slice(-4);
   const filmDuration = convertTimeFormat(duration);
   const filmDescription = description.length > 140 ? `${description.slice(0, 139)}...` : description;

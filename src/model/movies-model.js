@@ -7,10 +7,15 @@ export default class MoviesModel {
   moviesData = mockMovies.slice(0, CARD_COUNT);
   movieComments = mockComments;
 
+  constructor(filmId) {
+    this.filmId = filmId;
+  }
+
   getMoviesData() {
-    this.moviesData.forEach((movieData) => {
-      movieData.comments = movieData.comments.map((comment) => this.movieComments.find((movieComment) => comment === movieComment.id));
-    });
     return this.moviesData;
+  }
+
+  getComments() {
+    return this.moviesData.find((movieData) => movieData.id === this.filmId).comments.map((comment) => this.movieComments.find((movieComment) => String(comment) === movieComment.id));
   }
 }
