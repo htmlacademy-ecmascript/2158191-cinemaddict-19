@@ -1,11 +1,16 @@
-import {getRandomMovie} from '../mock/card.js';
+import { mockMovies } from '../mock/data.js';
+import { mockComments } from '../mock/data.js';
 
 const CARD_COUNT = 5;
 
 export default class MoviesModel {
-  movies = Array.from({length: CARD_COUNT}, getRandomMovie);
+  moviesData = mockMovies.slice(0, CARD_COUNT);
+  movieComments = mockComments;
 
-  getMovies() {
-    return this.movies;
+  getMoviesData() {
+    this.moviesData.forEach((movieData) => {
+      movieData.comments = movieData.comments.map((comment) => this.movieComments.find((movieComment) => comment === movieComment.id));
+    });
+    return this.moviesData;
   }
 }

@@ -8,8 +8,8 @@ export const POSTERS = [
 ];
 
 export const EMOTIONS = {
-  angry: './public/images/emoji/angry.png',
-  puke: './public/images/emoji/puke.png',
-  sleeping: './public/images/emoji/sleeping.png',
-  smile: './public/images/emoji/smile.png',
+  angry: './images/emoji/angry.png',
+  puke: './images/emoji/puke.png',
+  sleeping: './images/emoji/sleeping.png',
+  smile: './images/emoji/smile.png',
 };
