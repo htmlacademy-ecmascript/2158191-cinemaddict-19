@@ -1,8 +1,13 @@
-import FilmPresenter from './presenter/films-presenter.js';
+import MoviesPresenter from './presenter/movies-presenter.js';
+import MoviesModel from './model/movies-model.js';
 
 const siteMainElement = document.querySelector('.main');
 const siteHeaderElement = document.querySelector('.header');
 const siteFooterElement = document.querySelector('.footer__statistics');
-const filmPresenter = new FilmPresenter(siteHeaderElement, siteMainElement, siteFooterElement);
+const body = document.body;
+const moviesModel = new MoviesModel();
+const mainPagePresenter = new MoviesPresenter({headerProfile: siteHeaderElement, mainContainer: siteMainElement, footer: siteFooterElement, moviesModel: moviesModel, body});
 
-filmPresenter.init();
+
+mainPagePresenter.init();
+
