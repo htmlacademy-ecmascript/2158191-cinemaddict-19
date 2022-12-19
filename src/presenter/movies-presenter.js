@@ -17,68 +17,82 @@ import PopupCommentsListContainerView from '../view/popup/popup-comments-list-co
 import PopupNewCommentView from '../view/popup/popup-newcomment-view.js';
 
 export default class MoviesPresenter {
-  filmListComponent = new FilmListView();
-  filmListContainerComponent = new FilmListContainerView();
-  contentComponent = new ContentView();
-  popupContainer = new PopupContainerView();
-  popupFilmInfoContainer = new PopupFilmInfoContainerView();
-  popupCommentsListContainer = new PopupCommentsListContainerView();
+  #mainContainer = null;
+  #headerProfile = null;
+  #footer = null;
+  #moviesModel = null;
+  #body = null;
+  #moviesData = null;
+
+  #filmListComponent = new FilmListView();
+  #filmListContainerComponent = new FilmListContainerView();
+  #contentComponent = new ContentView();
+  #popupContainer = new PopupContainerView();
+  #popupFilmInfoContainer = new PopupFilmInfoContainerView();
+  #popupCommentsListContainer = new PopupCommentsListContainerView();
+  #popupCommentsContainer = null;
 
   constructor({headerProfile, mainContainer, footer, body, moviesModel}) {
-    this.mainContainer = mainContainer;
-    this.headerProfile = headerProfile;
-    this.footer = footer;
-    this.moviesModel = moviesModel;
-    this.body = body;
+    this.#mainContainer = mainContainer;
+    this.#headerProfile = headerProfile;
+    this.#footer = footer;
+    this.#moviesModel = moviesModel;
+    this.#body = body;
   }
 
-  renderHeaderProfile() {
-    render(new ProfileRatingView(), this.headerProfile);
+  #renderHeaderProfile() {
+    render(new ProfileRatingView(), this.#headerProfile);
   }
 
-  renderMenuAndSort() {
-    render(new MenuView(), this.mainContainer);
-    render(new SortView(), this.mainContainer);
+  #renderMenuAndSort() {
+    render(new MenuView(), this.#mainContainer);
+    render(new SortView(), this.#mainContainer);
   }
 
-  renderMainContent() {
-    render(this.contentComponent, this.mainContainer);
-    render(this.filmListComponent, this.contentComponent.getElement());
-    render(this.filmListContainerComponent, this.filmListComponent.getElement());
+  #renderMainContent() {
+    render(this.#contentComponent, this.#mainContainer);
+    render(this.#filmListComponent, this.#contentComponent.element());
+    render(this.#filmListContainerComponent, this.#filmListComponent.element());
 
-    for (let i = 0; i < this.moviesData.length; i++) {
-      render(new FilmCardView(this.moviesData[i]), this.filmListContainerComponent.getElement());
+    for (let i = 0; i < this.#moviesData.length; i++) {
+      this.#renderFilmCardWithPopup(this.#moviesData[i]);
     }
 
-    render(new ShowMoreButtonView(), this.filmListContainerComponent.getElement());
+    render(new ShowMoreButtonView(), this.#filmListContainerComponent.element());
   }
 
 
-  renderFooterStatistics() {
-    render(new FooterStatisticsView(), this.footer);
+  #renderFooterStatistics() {
+    render(new FooterStatisticsView(this.#moviesData.length), this.#footer);
   }
 
-  renderPopup() {
-    render(this.popupContainer, this.body);
-    render(this.popupFilmInfoContainer, this.popupContainer.getElement());
-    render(new PopupFilmInfoView(this.moviesData[0]), this.popupFilmInfoContainer.getElement());
-    render(this.popupCommentsContainer = new PopupCommentsContainerView(this.moviesData[0].comments.length), this.popupContainer.getElement());
-    render(this.popupCommentsListContainer, this.popupCommentsContainer.getElement());
-    render(new PopupNewCommentView(), this.popupCommentsContainer.getElement());
+  #renderPopup() {
+    render(this.#popupContainer, this.#body);
+    render(this.#popupFilmInfoContainer, this.#popupContainer.element());
+    render(new PopupFilmInfoView(this.#moviesData[0]), this.#popupFilmInfoContainer.element());
+    render(this.#popupCommentsContainer = new PopupCommentsContainerView(this.moviesData[0].comments.length), this.popupContainer.element());
+    render(this.#popupCommentsListContainer, this.#popupCommentsContainer.element());
+    render(new PopupNewCommentView(), this.popupCommentsContainer.element());
     if(this.moviesData[0].comments.length) {
       for (let i = 0; i < this.moviesData[0].comments.length; i++) {
-        render(new PopupCommentsView(this.moviesModel.getComments('0')[i]), this.popupCommentsListContainer.getElement());
+        render(new PopupCommentsView(this.moviesModel.getComments('0')[i]), this.popupCommentsListContainer.element());
       }
     }
   }
 
-  init() {
-    this.moviesData = [...this.moviesModel.getMoviesData()];
+  #renderFilmCardWithPopup(moviesData) {
+    const filmCard = new FilmCardView(moviesData);
 
-    this.renderHeaderProfile();
-    this.renderMenuAndSort();
-    this.renderMainContent();
-    this.renderFooterStatistics();
-    this.renderPopup();
+    render(filmCard, this.#filmListContainerComponent.element());
+  }
+
+  init() {
+    this.#moviesData = [...this.moviesModel.moviesData()];
+
+    this.#renderHeaderProfile();
+    this.#renderMenuAndSort();
+    this.#renderMainContent();
+    this.#renderFooterStatistics();
+    this.#renderPopup();
   }
 }

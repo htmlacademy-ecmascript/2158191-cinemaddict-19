@@ -1,25 +1,34 @@
 import {createElement} from '../render.js';
 
-function createFooterStatisticsTemplate() {
+function createFooterStatisticsTemplate(moviesAmount) {
+  this.moviesAmount = moviesAmount;
+
   return (
-    '<p>130 291 movies inside</p>'
+    `<p>${moviesAmount} movies inside</p>`
   );
 }
 
 export default class FooterStatisticsView {
-  getTemplate() {
-    return createFooterStatisticsTemplate();
+  #element = null;
+  #moviesAmount = null;
+
+  constructor(moviesAmount) {
+    this.#moviesAmount = moviesAmount;
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get template() {
+    return createFooterStatisticsTemplate(this.#moviesAmount);
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template());
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
