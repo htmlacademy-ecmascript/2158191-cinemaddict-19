@@ -34,23 +34,26 @@ function createFilmCardTemplate({comments, filmInfo: {title, poster, totalRating
 }
 
 export default class FilmCardView {
+  #element = null;
+  #movieInfo = null;
+
   constructor(movieInfo) {
-    this.movieInfo = movieInfo;
+    this.#movieInfo = movieInfo;
   }
 
-  getTemplate() {
-    return createFilmCardTemplate(this.movieInfo);
+  get template() {
+    return createFilmCardTemplate(this.#movieInfo);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }

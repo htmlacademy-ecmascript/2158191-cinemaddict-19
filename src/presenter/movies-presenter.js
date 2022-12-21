@@ -8,77 +8,97 @@ import FooterStatisticsView from '../view/footer-statistics-view.js';
 import MenuView from '../view/menu-view.js';
 import ProfileRatingView from '../view/profile-rating-view.js';
 import {render} from '../render.js';
-import PopupContainerView from '../view/popup/popup-container-view.js';
-import PopupFilmInfoContainerView from '../view/popup/popup-film-info-container-view.js';
-import PopupFilmInfoView from '../view/popup/popup-film-info-view';
-import PopupCommentsView from '../view/popup/popup-comments-view.js';
-import PopupCommentsContainerView from '../view/popup/popup-comments-container-view.js';
-import PopupCommentsListContainerView from '../view/popup/popup-comments-list-container-view.js';
-import PopupNewCommentView from '../view/popup/popup-newcomment-view.js';
+import PopupView from '../view/popup-view.js';
 
 export default class MoviesPresenter {
-  filmListComponent = new FilmListView();
-  filmListContainerComponent = new FilmListContainerView();
-  contentComponent = new ContentView();
-  popupContainer = new PopupContainerView();
-  popupFilmInfoContainer = new PopupFilmInfoContainerView();
-  popupCommentsListContainer = new PopupCommentsListContainerView();
+  #mainContainer = null;
+  #headerProfile = null;
+  #footer = null;
+  #moviesModel = null;
+  #body = null;
+  #moviesData = null;
+
+  #filmListComponent = new FilmListView();
+  #filmListContainerComponent = new FilmListContainerView();
+  #contentComponent = new ContentView();
+
 
   constructor({headerProfile, mainContainer, footer, body, moviesModel}) {
-    this.mainContainer = mainContainer;
-    this.headerProfile = headerProfile;
-    this.footer = footer;
-    this.moviesModel = moviesModel;
-    this.body = body;
+    this.#mainContainer = mainContainer;
+    this.#headerProfile = headerProfile;
+    this.#footer = footer;
+    this.#moviesModel = moviesModel;
+    this.#body = body;
   }
 
-  renderHeaderProfile() {
-    render(new ProfileRatingView(), this.headerProfile);
+  #renderHeaderProfile() {
+    render(new ProfileRatingView(), this.#headerProfile);
   }
 
-  renderMenuAndSort() {
-    render(new MenuView(), this.mainContainer);
-    render(new SortView(), this.mainContainer);
+  #renderMenuAndSort() {
+    render(new MenuView(), this.#mainContainer);
+    render(new SortView(), this.#mainContainer);
   }
 
-  renderMainContent() {
-    render(this.contentComponent, this.mainContainer);
-    render(this.filmListComponent, this.contentComponent.getElement());
-    render(this.filmListContainerComponent, this.filmListComponent.getElement());
+  #renderMainContent() {
+    render(this.#contentComponent, this.#mainContainer);
+    render(this.#filmListComponent, this.#contentComponent.element);
+    render(this.#filmListContainerComponent, this.#filmListComponent.element);
 
-    for (let i = 0; i < this.moviesData.length; i++) {
-      render(new FilmCardView(this.moviesData[i]), this.filmListContainerComponent.getElement());
+    for (let i = 0; i < this.#moviesData.length; i++) {
+      this.#renderFilmCardWithPopup(this.#moviesData[i]);
     }
 
-    render(new ShowMoreButtonView(), this.filmListContainerComponent.getElement());
+    render(new ShowMoreButtonView(), this.#filmListContainerComponent.element);
   }
 
 
-  renderFooterStatistics() {
-    render(new FooterStatisticsView(), this.footer);
+  #renderFooterStatistics() {
+    render(new FooterStatisticsView(this.#moviesData.length), this.#footer);
   }
 
-  renderPopup() {
-    render(this.popupContainer, this.body);
-    render(this.popupFilmInfoContainer, this.popupContainer.getElement());
-    render(new PopupFilmInfoView(this.moviesData[0]), this.popupFilmInfoContainer.getElement());
-    render(this.popupCommentsContainer = new PopupCommentsContainerView(this.moviesData[0].comments.length), this.popupContainer.getElement());
-    render(this.popupCommentsListContainer, this.popupCommentsContainer.getElement());
-    render(new PopupNewCommentView(), this.popupCommentsContainer.getElement());
-    if(this.moviesData[0].comments.length) {
-      for (let i = 0; i < this.moviesData[0].comments.length; i++) {
-        render(new PopupCommentsView(this.moviesModel.getComments('0')[i]), this.popupCommentsListContainer.getElement());
+
+  #renderFilmCardWithPopup(movieData) {
+    const filmCard = new FilmCardView(movieData);
+    const popup = new PopupView({movieData, commentsData:this.#moviesModel.getComments(movieData.id)}).element;
+
+    const closePopup = () => {
+      this.#body.removeChild(popup);
+      this.#body.classList.remove('hide-overflow');
+    };
+
+    const showPopup = () => {
+      this.#body.appendChild(popup);
+      this.#body.classList.add('hide-overflow');
+    };
+
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        closePopup();
+        document.removeEventListener('keydown', escKeyDownHandler);
       }
-    }
+    };
+
+    filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
+      showPopup();
+      document.addEventListener('keydown', escKeyDownHandler);
+    });
+
+    popup.querySelector('.film-details__close-btn').addEventListener('click',() => {
+      closePopup();
+      document.removeEventListener('keydown', escKeyDownHandler);
+    });
+
+    render(filmCard, this.#filmListContainerComponent.element);
   }
 
   init() {
-    this.moviesData = [...this.moviesModel.getMoviesData()];
+    this.#moviesData = [...this.#moviesModel.moviesData];
 
-    this.renderHeaderProfile();
-    this.renderMenuAndSort();
-    this.renderMainContent();
-    this.renderFooterStatistics();
-    this.renderPopup();
+    this.#renderHeaderProfile();
+    this.#renderMenuAndSort();
+    this.#renderMainContent();
+    this.#renderFooterStatistics();
   }
 }

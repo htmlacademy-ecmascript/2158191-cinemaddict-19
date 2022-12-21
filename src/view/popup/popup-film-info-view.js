@@ -76,23 +76,26 @@ function createPopupFilmInfoTemplate({filmInfo: {title, alternativeTitle, poster
 }
 
 export default class PopupView {
+  #element = null;
+  #movieInfo = null;
+
   constructor(movieInfo) {
-    this.movieInfo = movieInfo;
+    this.#movieInfo = movieInfo;
   }
 
-  getTemplate() {
-    return createPopupFilmInfoTemplate(this.movieInfo);
+  get template() {
+    return createPopupFilmInfoTemplate(this.#movieInfo);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }

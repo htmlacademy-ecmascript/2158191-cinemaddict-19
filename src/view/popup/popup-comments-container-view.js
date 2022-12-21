@@ -11,23 +11,26 @@ function createPopupCommentsContainerTemplate(commentsAmount) {
 }
 
 export default class PopupCommentsContainerView {
+  #element = null;
+  #commentsAmount = null;
+
   constructor(commentsAmount) {
-    this.commentsAmount = commentsAmount;
+    this.#commentsAmount = commentsAmount;
   }
 
-  getTemplate() {
-    return createPopupCommentsContainerTemplate(this.commentsAmount);
+  get template() {
+    return createPopupCommentsContainerTemplate(this.#commentsAmount);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
