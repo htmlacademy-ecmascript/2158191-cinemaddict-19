@@ -1,8 +1,6 @@
 import {createElement} from '../render.js';
 
 function createFooterStatisticsTemplate(moviesAmount) {
-  this.moviesAmount = moviesAmount;
-
   return (
     `<p>${moviesAmount} movies inside</p>`
   );
@@ -22,7 +20,7 @@ export default class FooterStatisticsView {
 
   get element() {
     if (!this.#element) {
-      this.#element = createElement(this.template());
+      this.#element = createElement(this.template);
     }
 
     return this.#element;

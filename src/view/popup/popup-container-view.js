@@ -18,7 +18,7 @@ export default class PopupContainerView {
 
   get element() {
     if (!this.#element) {
-      this.#element = createElement(this.template());
+      this.#element = createElement(this.template);
     }
 
     return this.#element;
