@@ -64,12 +64,12 @@ export default class MoviesPresenter {
 
     const closePopup = () => {
       this.#body.removeChild(popup);
-      this.#body.classList.remove('.hide-overflow');
+      this.#body.classList.remove('hide-overflow');
     };
 
     const showPopup = () => {
       this.#body.appendChild(popup);
-      this.#body.classList.add('.hide-overflow');
+      this.#body.classList.add('hide-overflow');
     };
 
     const escKeyDownHandler = (evt) => {
