@@ -1,18 +1,22 @@
 import {createElement} from '../render.js';
 
-function createFilmListTemplate() {
+function createFilmListTemplate(headerText) {
   return (
     `<section class="films-list">
-        <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+        <h2 class="films-list__title visually-hidden">${headerText}</h2>
      </section>`
   );
 }
 
 export default class FilmListView {
   #element = null;
+  #headerText = null;
+  constructor(headerText) {
+    this.#headerText = headerText;
+  }
 
   get template() {
-    return createFilmListTemplate();
+    return createFilmListTemplate(this.#headerText);
   }
 
   get element() {
