@@ -58,8 +58,6 @@ export default class MoviesPresenter {
 
       render(this.#filmListComponent, this.#contentComponent.element);
 
-      this.#filmListComponent.element.querySelector('.films-list__title').classList.remove('visually-hidden');
-
       return;
     }
 

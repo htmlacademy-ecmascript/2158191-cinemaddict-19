@@ -3,7 +3,7 @@ import {createElement} from '../render.js';
 function createFilmListTemplate(headerText) {
   return (
     `<section class="films-list">
-        <h2 class="films-list__title visually-hidden">${headerText}</h2>
+        ${headerText ? `<h2 class="films-list__title">${headerText}</h2>` : ''}
      </section>`
   );
 }
