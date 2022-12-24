@@ -10,6 +10,14 @@ import ProfileRatingView from '../view/profile-rating-view.js';
 import {render} from '../render.js';
 import PopupView from '../view/popup-view.js';
 
+const HEADER_TEXT = {
+  noMovies: 'There are no movies in our database',
+  noFavoirte: 'There are no favorite movies now',
+  noHistory: 'There are no watched movies now',
+  noWatchList: 'There are no movies to watch now',
+};
+const FILM_CARD_COUNT_PER_STEP = 5;
+
 export default class MoviesPresenter {
   #mainContainer = null;
   #headerProfile = null;
@@ -17,10 +25,12 @@ export default class MoviesPresenter {
   #moviesModel = null;
   #body = null;
   #moviesData = null;
+  #renderedFilmCardCount = FILM_CARD_COUNT_PER_STEP;
 
-  #filmListComponent = new FilmListView();
+  #filmListComponent = null;
   #filmListContainerComponent = new FilmListContainerView();
   #contentComponent = new ContentView();
+  #showMoreButtonComponent = null;
 
 
   constructor({headerProfile, mainContainer, footer, body, moviesModel}) {
@@ -42,16 +52,32 @@ export default class MoviesPresenter {
 
   #renderMainContent() {
     render(this.#contentComponent, this.#mainContainer);
+
+    if(!this.#moviesData.length) {
+      this.#filmListComponent = new FilmListView(HEADER_TEXT.noMovies);
+
+      render(this.#filmListComponent, this.#contentComponent.element);
+
+      return;
+    }
+
+    this.#filmListComponent = new FilmListView();
+
     render(this.#filmListComponent, this.#contentComponent.element);
     render(this.#filmListContainerComponent, this.#filmListComponent.element);
 
-    for (let i = 0; i < this.#moviesData.length; i++) {
+    for (let i = 0; i < Math.min(this.#moviesData.length, FILM_CARD_COUNT_PER_STEP); i++) {
       this.#renderFilmCardWithPopup(this.#moviesData[i]);
     }
 
-    render(new ShowMoreButtonView(), this.#filmListContainerComponent.element);
-  }
+    if (this.#moviesData.length > FILM_CARD_COUNT_PER_STEP) {
+      this.#showMoreButtonComponent = new ShowMoreButtonView();
 
+      render(this.#showMoreButtonComponent, this.#filmListContainerComponent.element);
+
+      this.#showMoreButtonComponent.element.addEventListener('click', this.#showMoreButtonClickHandler);
+    }
+  }
 
   #renderFooterStatistics() {
     render(new FooterStatisticsView(this.#moviesData.length), this.#footer);
@@ -92,6 +118,24 @@ export default class MoviesPresenter {
 
     render(filmCard, this.#filmListContainerComponent.element);
   }
+
+  #showMoreButtonClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#moviesData
+      .slice(this.#renderedFilmCardCount, this.#renderedFilmCardCount + FILM_CARD_COUNT_PER_STEP)
+      .forEach((movieData) => this.#renderFilmCardWithPopup(movieData));
+
+    this.#filmListContainerComponent.element.appendChild(this.#showMoreButtonComponent.element);
+
+    this.#renderedFilmCardCount += FILM_CARD_COUNT_PER_STEP;
+
+    if (this.#renderedFilmCardCount >= this.#moviesData.length) {
+      this.#showMoreButtonComponent.element.remove();
+      this.#showMoreButtonComponent.removeElement();
+    }
+
+
+  };
 
   init() {
     this.#moviesData = [...this.#moviesModel.moviesData];
