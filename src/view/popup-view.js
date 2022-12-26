@@ -32,9 +32,7 @@ export default class PopupView {
 
     this.#popupCommentsContainer.appendChild(this.#popupCommentsListContainer);
     this.#popupCommentsContainer.appendChild(new PopupNewCommentView().element);
-
     this.#popupFilmInfoContainer.appendChild(new PopupFilmInfoView(this.#movieData).element);
-
     this.#popupContainer.appendChild(this.#popupFilmInfoContainer);
     this.#popupContainer.appendChild(this.#popupCommentsContainer);
 
@@ -48,5 +46,6 @@ export default class PopupView {
 
   removeElement() {
     this.#element = null;
+    this.#element.remove();
   }
 }

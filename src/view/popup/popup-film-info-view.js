@@ -1,4 +1,4 @@
-import {createElement} from '../../render.js';
+import AbstractView from '../../framework/view/abstract-view.js';
 import {humanizeReleaseDate} from '../../utile.js';
 import {convertTimeFormat} from '../../utile.js';
 
@@ -75,27 +75,15 @@ function createPopupFilmInfoTemplate({filmInfo: {title, alternativeTitle, poster
   );
 }
 
-export default class PopupView {
-  #element = null;
+export default class PopupView extends AbstractView {
   #movieInfo = null;
 
   constructor(movieInfo) {
+    super();
     this.#movieInfo = movieInfo;
   }
 
   get template() {
     return createPopupFilmInfoTemplate(this.#movieInfo);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
