@@ -7,7 +7,7 @@ import FilmListView from '../view/film-list-view.js';
 import FooterStatisticsView from '../view/footer-statistics-view.js';
 import MenuView from '../view/menu-view.js';
 import ProfileRatingView from '../view/profile-rating-view.js';
-import {render} from '../render.js';
+import { render } from '../framework/render.js';
 import PopupView from '../view/popup-view.js';
 
 const HEADER_TEXT = {
