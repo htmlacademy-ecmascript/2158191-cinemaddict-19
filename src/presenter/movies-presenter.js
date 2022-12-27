@@ -71,11 +71,11 @@ export default class MoviesPresenter {
     }
 
     if (this.#moviesData.length > FILM_CARD_COUNT_PER_STEP) {
-      this.#showMoreButtonComponent = new ShowMoreButtonView();
+      this.#showMoreButtonComponent = new ShowMoreButtonView({onShowMoreButtonClick: this.#HandleShowMoreButtonClick});
 
       render(this.#showMoreButtonComponent, this.#filmListContainerComponent.element);
 
-      this.#showMoreButtonComponent.element.addEventListener('click', this.#showMoreButtonClickHandler);
+      /*this.#showMoreButtonComponent.element.addEventListener('click', this.#HandleShowMoreButtonClick);*/
     }
   }
 
@@ -85,41 +85,38 @@ export default class MoviesPresenter {
 
 
   #renderFilmCardWithPopup(movieData) {
-    const filmCard = new FilmCardView(movieData);
-    const popup = new PopupView({movieData, commentsData:this.#moviesModel.getComments(movieData.id)}).element;
-
-    const closePopup = () => {
-      this.#body.removeChild(popup);
-      this.#body.classList.remove('hide-overflow');
-    };
-
-    const showPopup = () => {
-      this.#body.appendChild(popup);
-      this.#body.classList.add('hide-overflow');
-    };
-
     const escKeyDownHandler = (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
-        closePopup();
+        closePopup.call(this);
         document.removeEventListener('keydown', escKeyDownHandler);
       }
     };
 
-    filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
-      showPopup();
-      document.addEventListener('keydown', escKeyDownHandler);
-    });
-
-    popup.querySelector('.film-details__close-btn').addEventListener('click',() => {
+    const popup = new PopupView({movieData, commentsData:this.#moviesModel.getComments(movieData.id), onCloseButtonClick: () => {
       closePopup();
       document.removeEventListener('keydown', escKeyDownHandler);
-    });
+    }}).element;
+
+    const filmCard = new FilmCardView({movieData, onFilmCardClick: () => {
+      showPopup();
+      document.addEventListener('keydown', escKeyDownHandler);
+    }});
+
+    function closePopup() {
+      document.body.removeChild(popup);
+      document.body.classList.remove('hide-overflow');
+    }
+
+    function showPopup() {
+      document.body.appendChild(popup);
+      document.body.classList.add('hide-overflow');
+    }
 
     render(filmCard, this.#filmListContainerComponent.element);
   }
 
-  #showMoreButtonClickHandler = (evt) => {
+  #HandleShowMoreButtonClick = (evt) => {
     evt.preventDefault();
     this.#moviesData
       .slice(this.#renderedFilmCardCount, this.#renderedFilmCardCount + FILM_CARD_COUNT_PER_STEP)
