@@ -35,13 +35,11 @@ function createFilmCardTemplate({comments, filmInfo: {title, poster, totalRating
 
 export default class FilmCardView extends AbstractView {
   #movieData = null;
-  #handleFilmCardClick = null;
 
   constructor({movieData, onFilmCardClick}) {
     super();
     this.#movieData = movieData;
-    this.#handleFilmCardClick = onFilmCardClick;
-    this.element.querySelector('.film-card__link').addEventListener('click', this.#handleFilmCardClick);
+    this.element.querySelector('.film-card__link').addEventListener('click', onFilmCardClick);
   }
 
   get template() {

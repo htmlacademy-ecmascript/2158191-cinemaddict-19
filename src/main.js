@@ -4,10 +4,8 @@ import MoviesModel from './model/movies-model.js';
 const siteMainElement = document.querySelector('.main');
 const siteHeaderElement = document.querySelector('.header');
 const siteFooterElement = document.querySelector('.footer__statistics');
-const body = document.body;
 const moviesModel = new MoviesModel();
-const mainPagePresenter = new MoviesPresenter({headerProfile: siteHeaderElement, mainContainer: siteMainElement, footer: siteFooterElement, moviesModel: moviesModel, body});
-
+const mainPagePresenter = new MoviesPresenter({headerProfile: siteHeaderElement, mainContainer: siteMainElement, footer: siteFooterElement, moviesModel: moviesModel});
 
 mainPagePresenter.init();
 

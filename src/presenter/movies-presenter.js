@@ -23,7 +23,6 @@ export default class MoviesPresenter {
   #headerProfile = null;
   #footer = null;
   #moviesModel = null;
-  #body = null;
   #moviesData = null;
   #renderedFilmCardCount = FILM_CARD_COUNT_PER_STEP;
 
@@ -33,12 +32,11 @@ export default class MoviesPresenter {
   #showMoreButtonComponent = null;
 
 
-  constructor({headerProfile, mainContainer, footer, body, moviesModel}) {
+  constructor({headerProfile, mainContainer, footer, moviesModel}) {
     this.#mainContainer = mainContainer;
     this.#headerProfile = headerProfile;
     this.#footer = footer;
     this.#moviesModel = moviesModel;
-    this.#body = body;
   }
 
   #renderHeaderProfile() {
@@ -74,8 +72,6 @@ export default class MoviesPresenter {
       this.#showMoreButtonComponent = new ShowMoreButtonView({onShowMoreButtonClick: this.#HandleShowMoreButtonClick});
 
       render(this.#showMoreButtonComponent, this.#filmListContainerComponent.element);
-
-      /*this.#showMoreButtonComponent.element.addEventListener('click', this.#HandleShowMoreButtonClick);*/
     }
   }
 
@@ -88,7 +84,7 @@ export default class MoviesPresenter {
     const escKeyDownHandler = (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
-        closePopup.call(this);
+        closePopup();
         document.removeEventListener('keydown', escKeyDownHandler);
       }
     };

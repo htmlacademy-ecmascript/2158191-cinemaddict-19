@@ -48,8 +48,4 @@ export default class PopupView extends AbstractView {
 
     return this.#element.firstElementChild;
   }
-
-  removeElement() {
-    this.#element = null;
-  }
 }
