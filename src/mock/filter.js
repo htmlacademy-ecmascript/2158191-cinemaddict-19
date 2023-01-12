@@ -1,10 +1,10 @@
-import {filter} from '../utils/filter.js';
+import {filters} from '../utils/filter.js';
 
-export function generateFilter(tasks) {
-  return Object.entries(filter).map(
-    ([filterName, filterTasks]) => ({
+export function generateFilter(movies) {
+  return Object.entries(filters).map(
+    ([filterName, filterMovies]) => ({
       name: filterName,
-      count: filterTasks(tasks).length,
+      count: filterMovies(movies).length,
     }),
   );
 }

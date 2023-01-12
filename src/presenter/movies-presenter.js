@@ -9,6 +9,7 @@ import MenuView from '../view/menu-view.js';
 import ProfileRatingView from '../view/profile-rating-view.js';
 import { render } from '../framework/render.js';
 import PopupView from '../view/popup-view.js';
+import {generateFilter} from '../mock/filter.js';
 
 const HEADER_TEXT = {
   noMovies: 'There are no movies in our database',
@@ -30,6 +31,7 @@ export default class MoviesPresenter {
   #filmListContainerComponent = new FilmListContainerView();
   #contentComponent = new ContentView();
   #showMoreButtonComponent = null;
+  #filters = null;
 
 
   constructor({headerProfile, mainContainer, footer, moviesModel}) {
@@ -37,6 +39,7 @@ export default class MoviesPresenter {
     this.#headerProfile = headerProfile;
     this.#footer = footer;
     this.#moviesModel = moviesModel;
+    this.#filters = generateFilter([...this.#moviesModel.moviesData]);
   }
 
   #renderHeaderProfile() {
@@ -44,7 +47,7 @@ export default class MoviesPresenter {
   }
 
   #renderMenuAndSort() {
-    render(new MenuView(), this.#mainContainer);
+    render(new MenuView(this.#filters), this.#mainContainer);
     render(new SortView(), this.#mainContainer);
   }
 

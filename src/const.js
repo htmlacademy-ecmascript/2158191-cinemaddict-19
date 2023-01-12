@@ -16,7 +16,7 @@ export const EMOTIONS = {
 
 export const FILTER_TYPE = {
   ALL: 'all',
-  WATCHLIST: 'watchlist',
-  HISTORY: 'history',
-  FAVORITES: 'favorites',
+  WATCHLIST: 'Watchlist',
+  HISTORY: 'History',
+  FAVORITES: 'Favorites',
 };
