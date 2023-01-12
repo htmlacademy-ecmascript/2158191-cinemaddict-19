@@ -13,3 +13,10 @@ export const EMOTIONS = {
   sleeping: './images/emoji/sleeping.png',
   smile: './images/emoji/smile.png',
 };
+
+export const FILTER_TYPE = {
+  ALL: 'all',
+  WATCHLIST: 'Watchlist',
+  HISTORY: 'History',
+  FAVORITES: 'Favorites',
+};

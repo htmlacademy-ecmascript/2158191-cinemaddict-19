@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeReleaseDate } from '../utile.js';
-import { convertTimeFormat } from '../utile.js';
+import { humanizeReleaseDate } from '../utils/utile.js';
+import { convertTimeFormat } from '../utils/utile.js';
 
 function createFilmCardTemplate({comments, filmInfo: {title, poster, totalRating, release, genre, duration, description}, userDetails }) {
   const releaseYear = humanizeReleaseDate(release.date).slice(-4);

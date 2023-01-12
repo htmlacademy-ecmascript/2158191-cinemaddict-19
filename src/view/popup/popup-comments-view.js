@@ -1,4 +1,4 @@
-import { humanizeCommentDate } from '../../utile.js';
+import { humanizeCommentDate } from '../../utils/utile.js';
 import AbstractView from '../../framework/view/abstract-view.js';
 import { EMOTIONS } from '../../const.js';
 

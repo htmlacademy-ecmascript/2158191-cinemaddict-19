@@ -1,6 +1,6 @@
 import AbstractView from '../../framework/view/abstract-view.js';
-import {humanizeReleaseDate} from '../../utile.js';
-import {convertTimeFormat} from '../../utile.js';
+import {humanizeReleaseDate} from '../../utils/utile.js';
+import {convertTimeFormat} from '../../utils/utile.js';
 
 function createPopupFilmInfoTemplate({filmInfo: {title, alternativeTitle, poster, totalRating, release, genre, duration, description, ageRating, actors, writers, director}, userDetails }) {
 
