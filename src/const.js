@@ -7,15 +7,15 @@ export const POSTERS = [
   './images/posters/the-man-with-the-golden-arm.jpg',
 ];
 
-export const EMOTIONS = {
+export const Emotions = {
   angry: './images/emoji/angry.png',
   puke: './images/emoji/puke.png',
   sleeping: './images/emoji/sleeping.png',
   smile: './images/emoji/smile.png',
 };
 
-export const FILTER_TYPE = {
-  ALL: 'all',
+export const FilterType = {
+  ALL: 'All',
   WATCHLIST: 'Watchlist',
   HISTORY: 'History',
   FAVORITES: 'Favorites',

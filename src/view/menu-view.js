@@ -1,10 +1,10 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-function createFilterItemTemplate(filter, isChecked) {
+function createFilterItemTemplate(filter, isSelected) {
   const {name, count} = filter;
 
   return (
-    `<a href="#${name}" class="main-navigation__item" ${isChecked ? 'main-navigation__item--active' : ''}${count === 0 ? 'disabled' : ''}>${name === 'all' ? 'All movies</a>' : `${name}<span class="main-navigation__item-count">${count}</span></a>`}`
+    `<a href="#${name}" class="main-navigation__item ${isSelected ? 'main-navigation__item--active' : ''}" ${count === 0 ? 'disabled' : ''}>${name === 'All' ? 'All movies</a>' : `${name}<span class="main-navigation__item-count">${count}</span></a>`}`
   );
 }
 

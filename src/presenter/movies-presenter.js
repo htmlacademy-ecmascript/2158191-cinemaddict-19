@@ -11,7 +11,7 @@ import { render } from '../framework/render.js';
 import PopupView from '../view/popup-view.js';
 import {generateFilter} from '../mock/filter.js';
 
-const HEADER_TEXT = {
+const HeaderText = {
   noMovies: 'There are no movies in our database',
   noFavoirte: 'There are no favorite movies now',
   noHistory: 'There are no watched movies now',
@@ -55,7 +55,7 @@ export default class MoviesPresenter {
     render(this.#contentComponent, this.#mainContainer);
 
     if(!this.#moviesData.length) {
-      this.#filmListComponent = new FilmListView(HEADER_TEXT.noMovies);
+      this.#filmListComponent = new FilmListView(HeaderText.noMovies);
 
       render(this.#filmListComponent, this.#contentComponent.element);
 
