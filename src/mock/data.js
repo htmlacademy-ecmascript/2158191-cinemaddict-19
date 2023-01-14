@@ -1,4 +1,4 @@
-import { getRandomArrayElement } from '../utile.js';
+import { getRandomArrayElement } from '../utils/utile.js';
 import { POSTERS } from '../const.js';
 
 export const mockComments = [{
@@ -129,7 +129,7 @@ export const mockMovies = [
     },
     userDetails: {
       watchlist: true,
-      alreadyWatched: true,
+      alreadyWatched: false,
       watchingDate: '2020-03-12T16:12:32.554Z',
       favorite: true
     }

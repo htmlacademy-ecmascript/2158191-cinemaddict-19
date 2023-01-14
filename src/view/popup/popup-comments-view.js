@@ -1,10 +1,10 @@
-import { humanizeCommentDate } from '../../utile.js';
+import { humanizeCommentDate } from '../../utils/utile.js';
 import AbstractView from '../../framework/view/abstract-view.js';
-import { EMOTIONS } from '../../const.js';
+import { Emotions } from '../../const.js';
 
 function createPopupCommentTemplate({author, comment, date, emotion}) {
   const commentDate = humanizeCommentDate(date);
-  const commentEmoji = EMOTIONS[emotion];
+  const commentEmoji = Emotions[emotion];
 
   return (
     `<li class="film-details__comment">
