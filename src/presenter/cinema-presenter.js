@@ -1,14 +1,13 @@
 import ShowMoreButtonView from '../view/button-show-more-view.js';
 import SortView from '../view/sort-view.js';
 import ContentView from '../view/content-view.js';
-import FilmCardView from '../view/film-card-view.js';
 import FilmListContainerView from '../view/film-list-container.js';
 import FilmListView from '../view/film-list-view.js';
 import FooterStatisticsView from '../view/footer-statistics-view.js';
 import MenuView from '../view/menu-view.js';
+import MoviePresenter from './movie-presenter.js';
 import ProfileRatingView from '../view/profile-rating-view.js';
 import { render } from '../framework/render.js';
-import PopupView from '../view/popup-view.js';
 import {generateFilter} from '../mock/filter.js';
 
 const HeaderText = {
@@ -19,7 +18,7 @@ const HeaderText = {
 };
 const FILM_CARD_COUNT_PER_STEP = 5;
 
-export default class MoviesPresenter {
+export default class cinemaPresenter {
   #mainContainer = null;
   #headerProfile = null;
   #footer = null;
@@ -31,6 +30,7 @@ export default class MoviesPresenter {
   #filmListContainerComponent = new FilmListContainerView();
   #contentComponent = new ContentView();
   #showMoreButtonComponent = null;
+  #moviePresenter = null;
   #filters = null;
 
 
@@ -84,35 +84,8 @@ export default class MoviesPresenter {
 
 
   #renderFilmCardWithPopup(movieData) {
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        closePopup();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    const popup = new PopupView({movieData, commentsData:this.#moviesModel.getComments(movieData.id), onCloseButtonClick: () => {
-      closePopup();
-      document.removeEventListener('keydown', escKeyDownHandler);
-    }}).element;
-
-    const filmCard = new FilmCardView({movieData, onFilmCardClick: () => {
-      showPopup();
-      document.addEventListener('keydown', escKeyDownHandler);
-    }});
-
-    function closePopup() {
-      document.body.removeChild(popup);
-      document.body.classList.remove('hide-overflow');
-    }
-
-    function showPopup() {
-      document.body.appendChild(popup);
-      document.body.classList.add('hide-overflow');
-    }
-
-    render(filmCard, this.#filmListContainerComponent.element);
+    this.#moviePresenter = new MoviePresenter({movieData, filmListContainerComponent: this.#filmListContainerComponent.element});
+    this.#moviePresenter.init();
   }
 
   #HandleShowMoreButtonClick = (evt) => {
