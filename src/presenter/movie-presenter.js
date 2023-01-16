@@ -1,6 +1,6 @@
 import PopupView from '../view/popup-view';
 import FilmCardView from '../view/film-card-view.js';
-import { render } from '../framework/render';
+import { render, remove, replace } from '../framework/render';
 import MoviesModel from '../model/movies-model';
 
 export default class MoviePresenter {
@@ -26,6 +26,9 @@ export default class MoviePresenter {
   };
 
   init() {
+    const prevPopupComponent = this.#popupComponent;
+    const prevFilmCardComponent = this.#filmCardComponent;
+
     this.#popupComponent = new PopupView({movieData: this.#movieData, commentsData:this.#moviesModel.getComments(this.#movieData.id), onCloseButtonClick: () => {
       this.#closePopup();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
@@ -36,8 +39,28 @@ export default class MoviePresenter {
       document.addEventListener('keydown', this.#escKeyDownHandler);
     }});
 
-    render(this.#filmCardComponent, this.#filmListContainerComponent);
+    if (prevFilmCardComponent === null || prevPopupComponent === null) {
+      render(this.#filmCardComponent, this.#filmListContainerComponent);
+      return;
+    }
+
+    if (this.#filmListContainerComponent.contains(prevPopupComponent.element)) {
+      replace(this.#popupComponent, prevPopupComponent);
+    }
+
+    if (this.#filmListContainerComponent.contains(prevFilmCardComponent.element)) {
+      replace(this.#filmCardComponent, prevFilmCardComponent);
+    }
+
+    remove(prevPopupComponent);
+    remove(prevFilmCardComponent);
   }
+
+  destroy() {
+    remove(this.#popupComponent);
+    remove(this.#filmCardComponent);
+  }
+
 
   #closePopup() {
     document.body.removeChild(this.#popupComponent);
