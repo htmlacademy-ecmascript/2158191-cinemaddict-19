@@ -9,6 +9,7 @@ import MoviePresenter from './movie-presenter.js';
 import ProfileRatingView from '../view/profile-rating-view.js';
 import { render, remove } from '../framework/render.js';
 import {generateFilter} from '../mock/filter.js';
+import { updateItem } from '../utils/utile.js';
 
 const HeaderText = {
   noMovies: 'There are no movies in our database',
@@ -16,6 +17,7 @@ const HeaderText = {
   noHistory: 'There are no watched movies now',
   noWatchList: 'There are no movies to watch now',
 };
+
 const FILM_CARD_COUNT_PER_STEP = 5;
 
 export default class СinemaPresenter {
@@ -111,6 +113,11 @@ export default class СinemaPresenter {
       this.#showMoreButtonComponent.element.remove();
       this.#showMoreButtonComponent.removeElement();
     }
+  };
+
+  #handleMovieChange = (updatedMovie) => {
+    this.#moviesData = updateItem(this.#moviesData, updatedMovie);
+    this.#moviePresenter.get(updatedMovie.id).init(updatedMovie);
   };
 
   init() {
