@@ -18,3 +18,8 @@ export function humanizeCommentDate(commentDate) {
 export function convertTimeFormat(minutes) {
   return `${parseInt(minutes / 60, 10)}h ${parseInt(minutes % 60, 10)}min`;
 }
+
+export function updateItem(items, update) {
+  return items.map((item) => item.id === update.id ? update : item);
+}
+
