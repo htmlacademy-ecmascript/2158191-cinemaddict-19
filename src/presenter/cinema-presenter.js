@@ -7,7 +7,7 @@ import FooterStatisticsView from '../view/footer-statistics-view.js';
 import MenuView from '../view/menu-view.js';
 import MoviePresenter from './movie-presenter.js';
 import ProfileRatingView from '../view/profile-rating-view.js';
-import { render } from '../framework/render.js';
+import { render, remove } from '../framework/render.js';
 import {generateFilter} from '../mock/filter.js';
 
 const HeaderText = {
@@ -18,13 +18,14 @@ const HeaderText = {
 };
 const FILM_CARD_COUNT_PER_STEP = 5;
 
-export default class cinemaPresenter {
+export default class СinemaPresenter {
   #mainContainer = null;
   #headerProfile = null;
   #footer = null;
   #moviesModel = null;
   #moviesData = null;
   #renderedFilmCardCount = FILM_CARD_COUNT_PER_STEP;
+  #moviePresenters = new Map();
 
   #filmListComponent = null;
   #filmListContainerComponent = new FilmListContainerView();
@@ -86,6 +87,14 @@ export default class cinemaPresenter {
   #renderFilmCardWithPopup(movieData) {
     this.#moviePresenter = new MoviePresenter({movieData, filmListContainerComponent: this.#filmListContainerComponent.element});
     this.#moviePresenter.init();
+    this.#moviePresenters.set(movieData.id, this.#moviePresenter);
+  }
+
+  #clearFilmList() {
+    this.#moviePresenters.forEach((presenter) => presenter.destroy());
+    this.#moviePresenters.clear();
+    this.#renderedFilmCardCount = FILM_CARD_COUNT_PER_STEP;
+    remove(this.#showMoreButtonComponent);
   }
 
   #HandleShowMoreButtonClick = (evt) => {
@@ -102,8 +111,6 @@ export default class cinemaPresenter {
       this.#showMoreButtonComponent.element.remove();
       this.#showMoreButtonComponent.removeElement();
     }
-
-
   };
 
   init() {
