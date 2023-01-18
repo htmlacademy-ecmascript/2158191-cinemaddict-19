@@ -16,36 +16,49 @@ export default class PopupView extends AbstractView {
   #movieData = null;
   #commentsData = null;
   #popupCommentsContainer = null;
-  #handleClick = null;
+  #handleCloseButtonClick = null;
+  #handleFavoriteClick = null;
+  #handleWatchlistClick = null;
+  #handleAlreadyWatchedClick = null;
 
-  constructor({movieData, commentsData, onCloseButtonClick}) {
+  constructor({movieData, commentsData, onCloseButtonClick, onFavoriteClick, onWatchlistClick, onAlreadyWatchedClick}) {
     super();
     this.#movieData = movieData;
     this.#commentsData = commentsData;
-    this.#handleClick = onCloseButtonClick;
+    this.#handleCloseButtonClick = onCloseButtonClick;
+    this.#handleFavoriteClick = onFavoriteClick;
+    this.#handleWatchlistClick = onWatchlistClick;
+    this.#handleAlreadyWatchedClick = onAlreadyWatchedClick;
+
   }
 
   get element() {
-    this.#popupCommentsContainer = new PopupCommentsContainerView(this.#movieData.comments.length).element;
-
-    if(this.#movieData.comments.length) {
-      for (let i = 0; i < this.#movieData.comments.length; i++) {
-        this.#popupCommentsListContainer.appendChild(new PopupCommentsView(this.#commentsData[i]).element);
-      }
-    }
-
-    this.#popupCommentsContainer.appendChild(this.#popupCommentsListContainer);
-    this.#popupCommentsContainer.appendChild(new PopupNewCommentView().element);
-    this.#popupFilmInfoContainer.appendChild(new PopupFilmInfoView(this.#movieData).element);
-    this.#popupContainer.appendChild(this.#popupFilmInfoContainer);
-    this.#popupContainer.appendChild(this.#popupCommentsContainer);
 
     if (!this.#element) {
+      this.#popupCommentsContainer = new PopupCommentsContainerView(this.#movieData.comments.length).element;
+
+      if(this.#movieData.comments.length) {
+        for (let i = 0; i < this.#movieData.comments.length; i++) {
+          this.#popupCommentsListContainer.appendChild(new PopupCommentsView(this.#commentsData[i]).element);
+        }
+      }
+
+      this.#popupCommentsContainer.appendChild(this.#popupCommentsListContainer);
+      this.#popupCommentsContainer.appendChild(new PopupNewCommentView().element);
+      this.#popupFilmInfoContainer.appendChild(new PopupFilmInfoView(this.#movieData).element);
+      this.#popupContainer.appendChild(this.#popupFilmInfoContainer);
+      this.#popupContainer.appendChild(this.#popupCommentsContainer);
+
+
       this.#element = document.createElement('div');
       this.#element.appendChild(this.#popupContainer);
-      this.#element.querySelector('.film-details__close-btn').addEventListener('click', this.#handleClick);
+      this.#element.querySelector('.film-details__close-btn').addEventListener('click', this.#handleCloseButtonClick);
     }
 
-    return this.#element.firstElementChild;
+    return this.#element;
+  }
+
+  remove() {
+    document.body.lastElementChild.remove();
   }
 }

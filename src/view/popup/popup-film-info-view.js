@@ -66,16 +66,15 @@ function createPopupFilmInfoTemplate({filmInfo: {title, alternativeTitle, poster
           </div>
         </div>
   
-        <section class="film-details__controls">
-          <button type="button" class="film-details__control-button film-details__control-button--watchlist ${watchlistClassName}" id="watchlist" name="watchlist">Add to watchlist</button>
-          <button type="button" class="film-details__control-button film-details__control-button--watched ${alreadyWatchedClassName}" id="watched" name="watched">Already watched</button>
-          <button type="button" class="film-details__control-button film-details__control-button--favorite ${favoriteClassName}" id="favorite" name="favorite">Add to favorites</button>
-        </section>
-      </div>`
+      <section class="film-details__controls">
+        <button type="button" class="film-details__control-button film-details__control-button--watchlist ${watchlistClassName}" id="watchlist" name="watchlist">Add to watchlist</button>
+        <button type="button" class="film-details__control-button film-details__control-button--watched ${alreadyWatchedClassName}" id="watched" name="watched">Already watched</button>
+        <button type="button" class="film-details__control-button film-details__control-button--favorite ${favoriteClassName}" id="favorite" name="favorite">Add to favorites</button>
+      </section>`
   );
 }
 
-export default class PopupView extends AbstractView {
+export default class PopupFilmInfoView extends AbstractView {
   #movieInfo = null;
 
   constructor(movieInfo) {

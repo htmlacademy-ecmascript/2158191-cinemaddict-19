@@ -8,12 +8,12 @@ export default class MoviePresenter {
   #filmCardComponent = null;
   #movieData = null;
   #filmListContainerComponent = null;
+  #handleDataChange = null;
   #moviesModel = new MoviesModel();
 
-  constructor({movieData, filmListContainerComponent}) {
-    this.#movieData = movieData;
+  constructor({filmListContainerComponent, onDataChange}) {
     this.#filmListContainerComponent = filmListContainerComponent;
-
+    this.#handleDataChange = onDataChange;
   }
 
 
@@ -25,19 +25,63 @@ export default class MoviePresenter {
     }
   };
 
-  init() {
+  #handleFavoriteClick = () => {
+    this.#handleDataChange({
+      ...this.#movieData,
+      userDetails: {
+        favorite: !this.#movieData.userDetails.favorite,
+        watchlist: this.#movieData.userDetails.watchlist,
+        alreadyWatched: this.#movieData.userDetails.alreadyWatched
+      }});
+  };
+
+  #handleWatchlistClick = () => {
+    this.#handleDataChange({
+      ...this.#movieData,
+      userDetails: {
+        watchlist: !this.#movieData.userDetails.watchlist,
+        favorite: this.#movieData.userDetails.favorite,
+        alreadyWatched: this.#movieData.userDetails.alreadyWatched}});
+  };
+
+  #handleAlreadyWatchedClick = () => {
+    this.#handleDataChange({
+      ...this.#movieData,
+      userDetails: {
+        alreadyWatched: !this.#movieData.userDetails.alreadyWatched,
+        watchlist: this.#movieData.userDetails.watchlist,
+        favorite: this.#movieData.userDetails.favorite,
+      }});
+  };
+
+  init(movieData) {
+    this.#movieData = movieData;
+
     const prevPopupComponent = this.#popupComponent;
     const prevFilmCardComponent = this.#filmCardComponent;
 
-    this.#popupComponent = new PopupView({movieData: this.#movieData, commentsData:this.#moviesModel.getComments(this.#movieData.id), onCloseButtonClick: () => {
-      this.#closePopup();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
-    }}).element;
+    this.#popupComponent = new PopupView({
+      movieData: this.#movieData,
+      commentsData:this.#moviesModel.getComments(this.#movieData.id),
+      onCloseButtonClick: () => {
+        this.#closePopup();
+        document.removeEventListener('keydown', this.#escKeyDownHandler);
+      },
+      onFavoriteClick: this.#handleFavoriteClick,
+      onWatchlistClick: this.#handleWatchlistClick,
+      onAlreadyWatchedClick: this.#handleAlreadyWatchedClick,
+    });
 
-    this.#filmCardComponent = new FilmCardView({movieData: this.#movieData, onFilmCardClick: () => {
-      this.#showPopup();
-      document.addEventListener('keydown', this.#escKeyDownHandler);
-    }});
+    this.#filmCardComponent = new FilmCardView({
+      movieData: this.#movieData,
+      onFilmCardClick: () => {
+        this.#showPopup();
+        document.addEventListener('keydown', this.#escKeyDownHandler);
+      },
+      onFavoriteClick: this.#handleFavoriteClick,
+      onWatchlistClick: this.#handleWatchlistClick,
+      onAlreadyWatchedClick: this.#handleAlreadyWatchedClick,
+    });
 
     if (prevFilmCardComponent === null || prevPopupComponent === null) {
       render(this.#filmCardComponent, this.#filmListContainerComponent);
@@ -63,12 +107,12 @@ export default class MoviePresenter {
 
 
   #closePopup() {
-    document.body.removeChild(this.#popupComponent);
+    remove(this.#popupComponent);
     document.body.classList.remove('hide-overflow');
   }
 
   #showPopup() {
-    document.body.appendChild(this.#popupComponent);
+    render(this.#popupComponent, document.body);
     document.body.classList.add('hide-overflow');
   }
 }

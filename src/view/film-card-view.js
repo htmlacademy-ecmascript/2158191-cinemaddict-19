@@ -36,10 +36,13 @@ function createFilmCardTemplate({comments, filmInfo: {title, poster, totalRating
 export default class FilmCardView extends AbstractView {
   #movieData = null;
 
-  constructor({movieData, onFilmCardClick}) {
+  constructor({movieData, onFilmCardClick, onAlreadyWatchedClick, onFavoriteClick, onWatchlistClick}) {
     super();
     this.#movieData = movieData;
     this.element.querySelector('.film-card__link').addEventListener('click', onFilmCardClick);
+    this.element.querySelector('.film-card__controls-item--mark-as-watched').addEventListener('click', onAlreadyWatchedClick);
+    this.element.querySelector('.film-card__controls-item--add-to-watchlist').addEventListener('click', onWatchlistClick);
+    this.element.querySelector('.film-card__controls-item--favorite').addEventListener('click', onFavoriteClick);
   }
 
   get template() {

@@ -87,8 +87,10 @@ export default class СinemaPresenter {
 
 
   #renderFilmCardWithPopup(movieData) {
-    this.#moviePresenter = new MoviePresenter({movieData, filmListContainerComponent: this.#filmListContainerComponent.element});
-    this.#moviePresenter.init();
+    this.#moviePresenter = new MoviePresenter({
+      filmListContainerComponent: this.#filmListContainerComponent.element,
+      onDataChange: this.#handleMovieChange});
+    this.#moviePresenter.init(movieData);
     this.#moviePresenters.set(movieData.id, this.#moviePresenter);
   }
 
@@ -117,7 +119,7 @@ export default class СinemaPresenter {
 
   #handleMovieChange = (updatedMovie) => {
     this.#moviesData = updateItem(this.#moviesData, updatedMovie);
-    this.#moviePresenter.get(updatedMovie.id).init(updatedMovie);
+    this.#moviePresenters.get(updatedMovie.id).init(updatedMovie);
   };
 
   init() {
