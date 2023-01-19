@@ -2,13 +2,9 @@ import AbstractView from '../../framework/view/abstract-view.js';
 import {humanizeReleaseDate} from '../../utils/utile.js';
 import {convertTimeFormat} from '../../utils/utile.js';
 
-function createPopupFilmInfoTemplate({filmInfo: {title, alternativeTitle, poster, totalRating, release, genre, duration, description, ageRating, actors, writers, director}, userDetails }) {
-
+function createPopupFilmInfoTemplate({filmInfo: {title, alternativeTitle, poster, totalRating, release, genre, duration, description, ageRating, actors, writers, director}}) {
   const releaseDate = humanizeReleaseDate(release.date);
   const filmDuration = convertTimeFormat(duration);
-  const watchlistClassName = userDetails.watchlist ? 'film-details__control-button--active' : '';
-  const alreadyWatchedClassName = userDetails.alreadyWatched ? 'film-details__control-button--active' : '';
-  const favoriteClassName = userDetails.favorite ? 'film-details__control-button--active' : '';
 
   return (
     `<div class="film-details__info-wrap">
@@ -63,14 +59,8 @@ function createPopupFilmInfoTemplate({filmInfo: {title, alternativeTitle, poster
             </table>
   
             <p class="film-details__film-description">${description}</p>
-          </div>
         </div>
-  
-      <section class="film-details__controls">
-        <button type="button" class="film-details__control-button film-details__control-button--watchlist ${watchlistClassName}" id="watchlist" name="watchlist">Add to watchlist</button>
-        <button type="button" class="film-details__control-button film-details__control-button--watched ${alreadyWatchedClassName}" id="watched" name="watched">Already watched</button>
-        <button type="button" class="film-details__control-button film-details__control-button--favorite ${favoriteClassName}" id="favorite" name="favorite">Add to favorites</button>
-      </section>`
+      </div>`
   );
 }
 

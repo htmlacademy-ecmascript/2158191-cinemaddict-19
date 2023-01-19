@@ -1,31 +1,35 @@
 import PopupContainerView from '../view/popup/popup-container-view.js';
 import PopupFilmInfoContainerView from '../view/popup/popup-film-info-container-view.js';
-import PopupFilmInfoView from '../view/popup/popup-film-info-view';
+import PopupFilmInfoView from '../view/popup/popup-film-info-view.js';
 import PopupCommentsView from '../view/popup/popup-comments-view.js';
 import PopupCommentsContainerView from '../view/popup/popup-comments-container-view.js';
 import PopupCommentsListContainerView from '../view/popup/popup-comments-list-container-view.js';
 import PopupNewCommentView from '../view/popup/popup-newcomment-view.js';
+import PopupInnerContainerView from '../view/popup/popup-inner-container-view.js';
+import PopupFilmInfoButtonsView from '../view/popup/popup-film-info-buttons-view.js';
 import AbstractView from '../framework/view/abstract-view.js';
+import { render } from '../framework/render';
 
 export default class PopupView extends AbstractView {
   #popupContainer = new PopupContainerView().element;
-  #popupFilmInfoContainer = new PopupFilmInfoContainerView().element;
-  #popupCommentsListContainer = new PopupCommentsListContainerView().element;
+  #popupCommentsListContainer = new PopupCommentsListContainerView();
+  #popupInnerContainer = new PopupInnerContainerView();
 
   #element = null;
   #movieData = null;
   #commentsData = null;
   #popupCommentsContainer = null;
-  #handleCloseButtonClick = null;
+
   #handleFavoriteClick = null;
   #handleWatchlistClick = null;
   #handleAlreadyWatchedClick = null;
+  #popupFilmInfoContainer = null;
 
   constructor({movieData, commentsData, onCloseButtonClick, onFavoriteClick, onWatchlistClick, onAlreadyWatchedClick}) {
     super();
     this.#movieData = movieData;
     this.#commentsData = commentsData;
-    this.#handleCloseButtonClick = onCloseButtonClick;
+    this.#popupFilmInfoContainer = new PopupFilmInfoContainerView(onCloseButtonClick);
     this.#handleFavoriteClick = onFavoriteClick;
     this.#handleWatchlistClick = onWatchlistClick;
     this.#handleAlreadyWatchedClick = onAlreadyWatchedClick;
@@ -33,32 +37,31 @@ export default class PopupView extends AbstractView {
   }
 
   get element() {
-
     if (!this.#element) {
-      this.#popupCommentsContainer = new PopupCommentsContainerView(this.#movieData.comments.length).element;
+      this.#popupCommentsContainer = new PopupCommentsContainerView(this.#movieData.comments.length);
 
       if(this.#movieData.comments.length) {
         for (let i = 0; i < this.#movieData.comments.length; i++) {
-          this.#popupCommentsListContainer.appendChild(new PopupCommentsView(this.#commentsData[i]).element);
+          render(new PopupCommentsView(this.#commentsData[i]), this.#popupCommentsListContainer.element);
         }
       }
 
-      this.#popupCommentsContainer.appendChild(this.#popupCommentsListContainer);
-      this.#popupCommentsContainer.appendChild(new PopupNewCommentView().element);
-      this.#popupFilmInfoContainer.appendChild(new PopupFilmInfoView(this.#movieData).element);
-      this.#popupContainer.appendChild(this.#popupFilmInfoContainer);
-      this.#popupContainer.appendChild(this.#popupCommentsContainer);
+      render(this.#popupCommentsListContainer, this.#popupCommentsContainer.element);
+      render(new PopupNewCommentView(), this.#popupCommentsContainer.element);
+      render(new PopupFilmInfoView(this.#movieData), this.#popupFilmInfoContainer.element);
+      render(new PopupFilmInfoButtonsView({
+        movieData: this.#movieData,
+        onFavoriteClick: this.#handleFavoriteClick,
+        onWatchlistClick: this.#handleWatchlistClick,
+        onAlreadyWatchedClick: this.#handleAlreadyWatchedClick,
+      }), this.#popupFilmInfoContainer.element);
+      render(this.#popupFilmInfoContainer, this.#popupInnerContainer.element);
+      render(this.#popupCommentsContainer, this.#popupInnerContainer.element);
+      render(this.#popupInnerContainer, this.#popupContainer);
 
-
-      this.#element = document.createElement('div');
-      this.#element.appendChild(this.#popupContainer);
-      this.#element.querySelector('.film-details__close-btn').addEventListener('click', this.#handleCloseButtonClick);
+      this.#element = this.#popupContainer;
     }
 
     return this.#element;
-  }
-
-  remove() {
-    document.body.lastElementChild.remove();
   }
 }

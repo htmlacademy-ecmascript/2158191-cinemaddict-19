@@ -10,6 +10,7 @@ export default class MoviePresenter {
   #filmListContainerComponent = null;
   #handleDataChange = null;
   #moviesModel = new MoviesModel();
+  #scrollPosition = 0;
 
   constructor({filmListContainerComponent, onDataChange}) {
     this.#filmListContainerComponent = filmListContainerComponent;
@@ -26,6 +27,7 @@ export default class MoviePresenter {
   };
 
   #handleFavoriteClick = () => {
+    this.#scrollPosition = this.#popupComponent.element.scrollTop;
     this.#handleDataChange({
       ...this.#movieData,
       userDetails: {
@@ -36,6 +38,7 @@ export default class MoviePresenter {
   };
 
   #handleWatchlistClick = () => {
+    this.#scrollPosition = this.#popupComponent.element.scrollTop;
     this.#handleDataChange({
       ...this.#movieData,
       userDetails: {
@@ -45,6 +48,7 @@ export default class MoviePresenter {
   };
 
   #handleAlreadyWatchedClick = () => {
+    this.#scrollPosition = this.#popupComponent.element.scrollTop;
     this.#handleDataChange({
       ...this.#movieData,
       userDetails: {
@@ -88,8 +92,10 @@ export default class MoviePresenter {
       return;
     }
 
-    if (this.#filmListContainerComponent.contains(prevPopupComponent.element)) {
+    if (document.body.contains(prevPopupComponent.element)) {
       replace(this.#popupComponent, prevPopupComponent);
+      this.#popupComponent.element.scrollTo(0, this.#scrollPosition);
+      this.#scrollPosition = 0;
     }
 
     if (this.#filmListContainerComponent.contains(prevFilmCardComponent.element)) {
@@ -112,6 +118,9 @@ export default class MoviePresenter {
   }
 
   #showPopup() {
+    if (document.body.querySelector('.film-details')) {
+      return;
+    }
     render(this.#popupComponent, document.body);
     document.body.classList.add('hide-overflow');
   }
