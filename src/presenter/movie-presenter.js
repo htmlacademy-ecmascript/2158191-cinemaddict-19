@@ -3,18 +3,28 @@ import FilmCardView from '../view/film-card-view.js';
 import { render, remove, replace } from '../framework/render';
 import MoviesModel from '../model/movies-model';
 
+const PopupState = {
+  CLOSED: 'CLOSED',
+  OPENED: 'OPENED',
+};
+
+
 export default class MoviePresenter {
   #popupComponent = null;
   #filmCardComponent = null;
   #movieData = null;
   #filmListContainerComponent = null;
   #handleDataChange = null;
+  #handlePopupStateChange = null;
+
   #moviesModel = new MoviesModel();
+  #popupState = PopupState.CLOSED;
   #scrollPosition = 0;
 
-  constructor({filmListContainerComponent, onDataChange}) {
+  constructor({filmListContainerComponent, onDataChange, onPopupStateChange}) {
     this.#filmListContainerComponent = filmListContainerComponent;
     this.#handleDataChange = onDataChange;
+    this.#handlePopupStateChange = onPopupStateChange;
   }
 
 
@@ -106,6 +116,12 @@ export default class MoviePresenter {
     remove(prevFilmCardComponent);
   }
 
+  resetView() {
+    if (this.#popupState !== PopupState.CLOSED) {
+      this.#closePopup();
+    }
+  }
+
   destroy() {
     remove(this.#popupComponent);
     remove(this.#filmCardComponent);
@@ -115,13 +131,13 @@ export default class MoviePresenter {
   #closePopup() {
     remove(this.#popupComponent);
     document.body.classList.remove('hide-overflow');
+    this.popupState = PopupState.CLOSED;
   }
 
   #showPopup() {
-    if (document.body.querySelector('.film-details')) {
-      return;
-    }
+    this.#handlePopupStateChange();
     render(this.#popupComponent, document.body);
+    this.#popupState = PopupState.OPENED;
     document.body.classList.add('hide-overflow');
   }
 }
