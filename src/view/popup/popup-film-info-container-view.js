@@ -11,6 +11,11 @@ function createPopupFilmInfoContainerTemplate() {
 }
 
 export default class PopupFilmInfoContainerView extends AbstractView{
+  constructor(onCloseButtonClick) {
+    super();
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', onCloseButtonClick);
+  }
+
   get template() {
     return createPopupFilmInfoContainerTemplate();
   }

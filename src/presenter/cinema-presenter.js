@@ -1,15 +1,15 @@
 import ShowMoreButtonView from '../view/button-show-more-view.js';
 import SortView from '../view/sort-view.js';
 import ContentView from '../view/content-view.js';
-import FilmCardView from '../view/film-card-view.js';
 import FilmListContainerView from '../view/film-list-container.js';
 import FilmListView from '../view/film-list-view.js';
 import FooterStatisticsView from '../view/footer-statistics-view.js';
 import MenuView from '../view/menu-view.js';
+import MoviePresenter from './movie-presenter.js';
 import ProfileRatingView from '../view/profile-rating-view.js';
-import { render } from '../framework/render.js';
-import PopupView from '../view/popup-view.js';
+import { render, remove } from '../framework/render.js';
 import {generateFilter} from '../mock/filter.js';
+import { updateItem } from '../utils/utile.js';
 
 const HeaderText = {
   noMovies: 'There are no movies in our database',
@@ -17,20 +17,23 @@ const HeaderText = {
   noHistory: 'There are no watched movies now',
   noWatchList: 'There are no movies to watch now',
 };
+
 const FILM_CARD_COUNT_PER_STEP = 5;
 
-export default class MoviesPresenter {
+export default class СinemaPresenter {
   #mainContainer = null;
   #headerProfile = null;
   #footer = null;
   #moviesModel = null;
   #moviesData = null;
   #renderedFilmCardCount = FILM_CARD_COUNT_PER_STEP;
+  #moviePresenters = new Map();
 
   #filmListComponent = null;
   #filmListContainerComponent = new FilmListContainerView();
   #contentComponent = new ContentView();
   #showMoreButtonComponent = null;
+  #moviePresenter = null;
   #filters = null;
 
 
@@ -84,35 +87,20 @@ export default class MoviesPresenter {
 
 
   #renderFilmCardWithPopup(movieData) {
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        closePopup();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
+    this.#moviePresenter = new MoviePresenter({
+      filmListContainerComponent: this.#filmListContainerComponent.element,
+      onDataChange: this.#handleMovieChange,
+      onPopupStateChange: this.#handlePopupStateChange,
+    });
+    this.#moviePresenter.init(movieData);
+    this.#moviePresenters.set(movieData.id, this.#moviePresenter);
+  }
 
-    const popup = new PopupView({movieData, commentsData:this.#moviesModel.getComments(movieData.id), onCloseButtonClick: () => {
-      closePopup();
-      document.removeEventListener('keydown', escKeyDownHandler);
-    }}).element;
-
-    const filmCard = new FilmCardView({movieData, onFilmCardClick: () => {
-      showPopup();
-      document.addEventListener('keydown', escKeyDownHandler);
-    }});
-
-    function closePopup() {
-      document.body.removeChild(popup);
-      document.body.classList.remove('hide-overflow');
-    }
-
-    function showPopup() {
-      document.body.appendChild(popup);
-      document.body.classList.add('hide-overflow');
-    }
-
-    render(filmCard, this.#filmListContainerComponent.element);
+  #clearFilmList() {
+    this.#moviePresenters.forEach((presenter) => presenter.destroy());
+    this.#moviePresenters.clear();
+    this.#renderedFilmCardCount = FILM_CARD_COUNT_PER_STEP;
+    remove(this.#showMoreButtonComponent);
   }
 
   #HandleShowMoreButtonClick = (evt) => {
@@ -129,8 +117,15 @@ export default class MoviesPresenter {
       this.#showMoreButtonComponent.element.remove();
       this.#showMoreButtonComponent.removeElement();
     }
+  };
 
+  #handleMovieChange = (updatedMovie) => {
+    this.#moviesData = updateItem(this.#moviesData, updatedMovie);
+    this.#moviePresenters.get(updatedMovie.id).init(updatedMovie);
+  };
 
+  #handlePopupStateChange = () => {
+    this.#moviePresenters.forEach((presenter) => presenter.resetView());
   };
 
   init() {
