@@ -23,3 +23,10 @@ export function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
+export function sortMovieDateDown(movieA, movieB) {
+  return dayjs(movieB.filmInfo.release.date).diff(dayjs(movieA.filmInfo.release.date));
+}
+
+export function sortMovieRatingDown(movieA, movieB) {
+  return movieB.filmInfo.totalRating - movieA.filmInfo.totalRating;
+}

@@ -9,7 +9,8 @@ import MoviePresenter from './movie-presenter.js';
 import ProfileRatingView from '../view/profile-rating-view.js';
 import { render, remove } from '../framework/render.js';
 import {generateFilter} from '../mock/filter.js';
-import { updateItem } from '../utils/utile.js';
+import { updateItem, sortMovieDateDown, sortMovieRatingDown} from '../utils/utile.js';
+import { SortType } from '../const.js';
 
 const HeaderText = {
   noMovies: 'There are no movies in our database',
@@ -26,16 +27,18 @@ export default class СinemaPresenter {
   #footer = null;
   #moviesModel = null;
   #moviesData = null;
-  #renderedFilmCardCount = FILM_CARD_COUNT_PER_STEP;
-  #moviePresenters = new Map();
-
-  #filmListComponent = null;
-  #filmListContainerComponent = new FilmListContainerView();
-  #contentComponent = new ContentView();
-  #showMoreButtonComponent = null;
   #moviePresenter = null;
   #filters = null;
+  #filmListComponent = null;
+  #showMoreButtonComponent = null;
 
+  #renderedFilmCardCount = FILM_CARD_COUNT_PER_STEP;
+  #moviePresenters = new Map();
+  #currentSortType = SortType.DEFAULT;
+  #sourcedMoviesData = [];
+
+  #filmListContainerComponent = new FilmListContainerView();
+  #contentComponent = new ContentView();
 
   constructor({headerProfile, mainContainer, footer, moviesModel}) {
     this.#mainContainer = mainContainer;
@@ -49,9 +52,12 @@ export default class СinemaPresenter {
     render(new ProfileRatingView(), this.#headerProfile);
   }
 
-  #renderMenuAndSort() {
+  #renderMenu() {
     render(new MenuView(this.#filters), this.#mainContainer);
-    render(new SortView(), this.#mainContainer);
+  }
+
+  #renderSort() {
+    render(new SortView({onSortTypeChange: this.#handleSortTypeChange}), this.#mainContainer);
   }
 
   #renderMainContent() {
@@ -100,7 +106,23 @@ export default class СinemaPresenter {
     this.#moviePresenters.forEach((presenter) => presenter.destroy());
     this.#moviePresenters.clear();
     this.#renderedFilmCardCount = FILM_CARD_COUNT_PER_STEP;
+    remove(this.#contentComponent);
     remove(this.#showMoreButtonComponent);
+  }
+
+  #sortMovies(sortType) {
+    switch (sortType) {
+      case SortType.DATE:
+        this.#moviesData.sort(sortMovieDateDown);
+        break;
+      case SortType.RATING:
+        this.#moviesData.sort(sortMovieRatingDown);
+        break;
+      default:
+        this.#moviesData = [...this.#sourcedMoviesData];
+    }
+
+    this.#currentSortType = sortType;
   }
 
   #HandleShowMoreButtonClick = (evt) => {
@@ -121,6 +143,7 @@ export default class СinemaPresenter {
 
   #handleMovieChange = (updatedMovie) => {
     this.#moviesData = updateItem(this.#moviesData, updatedMovie);
+    this.#sourcedMoviesData = updateItem(this.#sourcedMoviesData, updatedMovie);
     this.#moviePresenters.get(updatedMovie.id).init(updatedMovie);
   };
 
@@ -128,11 +151,24 @@ export default class СinemaPresenter {
     this.#moviePresenters.forEach((presenter) => presenter.resetView());
   };
 
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortMovies(sortType);
+    this.#clearFilmList();
+    this.#renderMainContent();
+  };
+
+
   init() {
     this.#moviesData = [...this.#moviesModel.moviesData];
+    this.#sourcedMoviesData = [...this.#moviesModel.moviesData];
 
     this.#renderHeaderProfile();
-    this.#renderMenuAndSort();
+    this.#renderMenu();
+    this.#renderSort();
     this.#renderMainContent();
     this.#renderFooterStatistics();
   }

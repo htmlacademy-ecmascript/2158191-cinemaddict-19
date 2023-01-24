@@ -20,3 +20,9 @@ export const FilterType = {
   HISTORY: 'History',
   FAVORITES: 'Favorites',
 };
+
+export const SortType = {
+  DEFAULT: 'default',
+  RATING: 'rating',
+  DATE: 'date',
+};
