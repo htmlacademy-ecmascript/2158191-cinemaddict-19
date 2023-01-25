@@ -8,7 +8,6 @@ const PopupState = {
   OPENED: 'OPENED',
 };
 
-
 export default class MoviePresenter {
   #popupComponent = null;
   #filmCardComponent = null;
@@ -132,6 +131,7 @@ export default class MoviePresenter {
     remove(this.#popupComponent);
     document.body.classList.remove('hide-overflow');
     this.popupState = PopupState.CLOSED;
+    this.#popupComponent.resetPopupNewCommentView();
   }
 
   #showPopup() {

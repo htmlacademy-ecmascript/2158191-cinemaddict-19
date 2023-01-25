@@ -24,12 +24,14 @@ export default class PopupView extends AbstractView {
   #handleWatchlistClick = null;
   #handleAlreadyWatchedClick = null;
   #popupFilmInfoContainer = null;
+  #popupNewCommentView = null;
 
   constructor({movieData, commentsData, onCloseButtonClick, onFavoriteClick, onWatchlistClick, onAlreadyWatchedClick}) {
     super();
     this.#movieData = movieData;
     this.#commentsData = commentsData;
     this.#popupFilmInfoContainer = new PopupFilmInfoContainerView(onCloseButtonClick);
+    this.#popupNewCommentView = new PopupNewCommentView();
     this.#handleFavoriteClick = onFavoriteClick;
     this.#handleWatchlistClick = onWatchlistClick;
     this.#handleAlreadyWatchedClick = onAlreadyWatchedClick;
@@ -47,7 +49,7 @@ export default class PopupView extends AbstractView {
       }
 
       render(this.#popupCommentsListContainer, this.#popupCommentsContainer.element);
-      render(new PopupNewCommentView(), this.#popupCommentsContainer.element);
+      render(this.#popupNewCommentView, this.#popupCommentsContainer.element);
       render(new PopupFilmInfoView(this.#movieData), this.#popupFilmInfoContainer.element);
       render(new PopupFilmInfoButtonsView({
         movieData: this.#movieData,
@@ -63,5 +65,9 @@ export default class PopupView extends AbstractView {
     }
 
     return this.#element;
+  }
+
+  resetPopupNewCommentView() {
+    this.#popupNewCommentView.reset();
   }
 }
