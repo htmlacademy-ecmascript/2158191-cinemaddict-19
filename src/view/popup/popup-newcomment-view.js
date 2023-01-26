@@ -39,13 +39,14 @@ function createPopupNewCommentTemplate({emoji, comment}) {
 }
 
 export default class PopupNewCommentView extends AbstractStatefulView {
+  #initialState = {
+    emoji: '',
+    comment: '',
+  };
 
   constructor() {
     super();
-    this._setState({
-      emoji: '',
-      comment: '',
-    });
+    this._setState(this.#initialState);
     this._restoreHandlers();
   }
 
@@ -55,14 +56,12 @@ export default class PopupNewCommentView extends AbstractStatefulView {
   }
 
   get template() {
-    return createPopupNewCommentTemplate({emoji: this._state.emoji, comment: this._state.comment});
+    const {emoji, comment} = this._state;
+    return createPopupNewCommentTemplate({emoji, comment});
   }
 
   reset() {
-    this.updateElement({
-      emoji: '',
-      comment: '',
-    });
+    this.updateElement(this.#initialState);
   }
 
   #emojiClickHandler = (evt) => {
