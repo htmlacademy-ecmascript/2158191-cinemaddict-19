@@ -5,7 +5,7 @@ export const mockComments = [{
   id: '0',
   author: 'Ilya Reilly',
   comment: 'a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.',
-  date: '2019-05-11T16:12:32.554Z',
+  date: '2005-05-11T16:12:32.554Z',
   emotion: 'smile'
 },
 
@@ -13,7 +13,7 @@ export const mockComments = [{
   id: '1',
   author: 'Piter Parker',
   comment: 'This film much worse than mine',
-  date: '2021-01-09T16:12:32.554Z',
+  date: '2015-01-09T16:12:32.554Z',
   emotion: 'puke'
 },
 
@@ -29,7 +29,7 @@ export const mockComments = [{
   id: '3',
   author: 'Volchara',
   comment: 'This film is awesome',
-  date: '2019-05-11T16:12:32.554Z',
+  date: '2023-01-26T16:29:32.554Z',
   emotion: 'smile'
 },
 
@@ -37,7 +37,7 @@ export const mockComments = [{
   id: '4',
   author: 'Donald Trump',
   comment: 'Biden must see this',
-  date: '2022-05-11T14:13:32.554Z',
+  date: '2023-01-26T14:13:32.554Z',
   emotion: 'sleeping'
 },
 
@@ -92,7 +92,7 @@ export const mockMovies = [
       writers: 'Jerry Bruckheimer',
       actors: 'Stephen Graham, Kaya Scodelario, Golshifteh Farahani, Johnny Depp',
       release: {
-        date: '2017-05-11T00:00:00.000Z',
+        date: '2022-05-11T00:00:00.000Z',
         releaseCountry: 'USA'
       },
       duration: 97,
@@ -120,7 +120,7 @@ export const mockMovies = [
       writers: 'Christopher Markus, Stephen McFeely',
       actors: 'Robert Downey Jr., Chris Evans, Mark Ruffalo, Chris Hemsworth, Scarlett Johansson',
       release: {
-        date: '2019-04-26T00:00:00.000Z',
+        date: '2023-01-26T00:00:00.000Z',
         releaseCountry: 'USA'
       },
       duration: 181,
@@ -130,7 +130,7 @@ export const mockMovies = [
     userDetails: {
       watchlist: true,
       alreadyWatched: false,
-      watchingDate: '2020-03-12T16:12:32.554Z',
+      watchingDate: '2023-03-12T16:12:32.554Z',
       favorite: true
     }
   },
@@ -176,7 +176,7 @@ export const mockMovies = [
       writers: 'Qui Nguyen, Adele Lim',
       actors: 'Kelly Marie Tran, Awkwafina',
       release: {
-        date: '2021-03-5T00:00:00.000Z',
+        date: '2019-12-20T00:00:00.000Z',
         releaseCountry: 'Finland'
       },
       duration: 90,

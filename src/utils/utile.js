@@ -1,4 +1,7 @@
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 const RELEASE_DATE_FORMAT = 'D MMMM YYYY';
 const COMMENT_DATE_FORMAT = 'YYYY/MM/DD HH:mm';
@@ -12,7 +15,8 @@ export function humanizeReleaseDate(releaseDate) {
 }
 
 export function humanizeCommentDate(commentDate) {
-  return commentDate ? dayjs(commentDate).format(COMMENT_DATE_FORMAT) : '';
+  /*return commentDate ? dayjs(commentDate).format(COMMENT_DATE_FORMAT) : '';*/
+  return dayjs(commentDate).fromNow();
 }
 
 export function convertTimeFormat(minutes) {
