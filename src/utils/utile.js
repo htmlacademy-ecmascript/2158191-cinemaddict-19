@@ -4,7 +4,6 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(relativeTime);
 
 const RELEASE_DATE_FORMAT = 'D MMMM YYYY';
-const COMMENT_DATE_FORMAT = 'YYYY/MM/DD HH:mm';
 
 export function getRandomArrayElement(items) {
   return items[Math.floor(Math.random() * items.length)];
