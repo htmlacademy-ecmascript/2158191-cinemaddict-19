@@ -1,7 +1,7 @@
 import PopupView from '../view/popup-view';
 import FilmCardView from '../view/film-card-view.js';
 import { render, remove, replace } from '../framework/render';
-import MoviesModel from '../model/movies-model';
+import { UserAction, UpdateType } from '../const.js';
 
 const PopupState = {
   CLOSED: 'CLOSED',
@@ -16,7 +16,6 @@ export default class MoviePresenter {
   #handleDataChange = null;
   #handlePopupStateChange = null;
 
-  #moviesModel = new MoviesModel();
   #popupState = PopupState.CLOSED;
   #scrollPosition = 0;
 
@@ -35,39 +34,89 @@ export default class MoviePresenter {
     }
   };
 
-  #handleFavoriteClick = () => {
+  #handleFavoriteClick = (updateType) => {
     this.#scrollPosition = this.#popupComponent.element.scrollTop;
-    this.#handleDataChange({
-      ...this.#movieData,
-      userDetails: {
-        favorite: !this.#movieData.userDetails.favorite,
-        watchlist: this.#movieData.userDetails.watchlist,
-        alreadyWatched: this.#movieData.userDetails.alreadyWatched
-      }});
+    this.#handleDataChange(
+      UserAction.UPDATE_MOVIE,
+      updateType,
+      {
+        ...this.#movieData,
+        userDetails: {
+          favorite: !this.#movieData.userDetails.favorite,
+          watchlist: this.#movieData.userDetails.watchlist,
+          alreadyWatched: this.#movieData.userDetails.alreadyWatched
+        }
+      });
   };
 
-  #handleWatchlistClick = () => {
+  #handleWatchlistClick = (updateType) => {
     this.#scrollPosition = this.#popupComponent.element.scrollTop;
-    this.#handleDataChange({
-      ...this.#movieData,
-      userDetails: {
-        watchlist: !this.#movieData.userDetails.watchlist,
-        favorite: this.#movieData.userDetails.favorite,
-        alreadyWatched: this.#movieData.userDetails.alreadyWatched}});
+    this.#handleDataChange(
+      UserAction.UPDATE_MOVIE,
+      updateType,
+      {
+        ...this.#movieData,
+        userDetails: {
+          watchlist: !this.#movieData.userDetails.watchlist,
+          favorite: this.#movieData.userDetails.favorite,
+          alreadyWatched: this.#movieData.userDetails.alreadyWatched
+        }
+      });
   };
 
-  #handleAlreadyWatchedClick = () => {
+  #handleAlreadyWatchedClick = (updateType) => {
     this.#scrollPosition = this.#popupComponent.element.scrollTop;
-    this.#handleDataChange({
-      ...this.#movieData,
-      userDetails: {
-        alreadyWatched: !this.#movieData.userDetails.alreadyWatched,
-        watchlist: this.#movieData.userDetails.watchlist,
-        favorite: this.#movieData.userDetails.favorite,
-      }});
+    this.#handleDataChange(
+      UserAction.UPDATE_MOVIE,
+      updateType,
+      {
+        ...this.#movieData,
+        userDetails: {
+          alreadyWatched: !this.#movieData.userDetails.alreadyWatched,
+          watchlist: this.#movieData.userDetails.watchlist,
+          favorite: this.#movieData.userDetails.favorite,
+        }
+      });
   };
 
-  init(movieData) {
+  #handleDeleteClick = (comment) => {
+    this.#scrollPosition = this.#popupComponent.element.scrollTop;
+
+    this.#handleDataChange(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.PATCH,
+      {...this.#movieData,
+        comments: this.#movieData.comments.filter((commentId) => commentId !== comment.id)
+      }
+    );
+
+    this.#handleDataChange(
+      UserAction.DELETE_COMMENT,
+      '',
+      comment
+    );
+  };
+
+  #handleFormSubmit = (comment) => {
+    const id = String(Math.random());
+    this.#scrollPosition = this.#popupComponent.element.scrollTop;
+
+    this.#handleDataChange(
+      UserAction.ADD_COMMENT,
+      '',
+      {id:id, author: 'unknown', ...comment, date: '2005-05-11T16:12:32.554Z'},
+    );
+
+    this.#handleDataChange(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.PATCH,
+      {...this.#movieData,
+        comments: this.#movieData.comments.push(id),
+      }
+    );
+  };
+
+  init(movieData, commentsData) {
     this.#movieData = movieData;
 
     const prevPopupComponent = this.#popupComponent;
@@ -75,7 +124,7 @@ export default class MoviePresenter {
 
     this.#popupComponent = new PopupView({
       movieData: this.#movieData,
-      commentsData:this.#moviesModel.getComments(this.#movieData.id),
+      commentsData,
       onCloseButtonClick: () => {
         this.#closePopup();
         document.removeEventListener('keydown', this.#escKeyDownHandler);
@@ -83,6 +132,8 @@ export default class MoviePresenter {
       onFavoriteClick: this.#handleFavoriteClick,
       onWatchlistClick: this.#handleWatchlistClick,
       onAlreadyWatchedClick: this.#handleAlreadyWatchedClick,
+      onDeleteClick: this.#handleDeleteClick,
+      onFormSubmit: this.#handleFormSubmit,
     });
 
     this.#filmCardComponent = new FilmCardView({
