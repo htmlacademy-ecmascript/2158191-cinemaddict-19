@@ -10,7 +10,7 @@ import { render, remove } from '../framework/render.js';
 import { sortMovieDateDown, sortMovieRatingDown } from '../utils/utile.js';
 import { SortType, UserAction, UpdateType, FilterType } from '../const.js';
 import FilterPresenter from './filter-presenter.js';
-import { filter } from '../utils/filter.js';
+import { filters } from '../utils/filter.js';
 
 const HeaderText = {
   [FilterType.ALL]: 'There are no movies in our database',
@@ -115,7 +115,7 @@ export default class СinemaPresenter {
   get moviesData() {
     this.#filterType = this.#filterModel.filter;
     const moviesData = [...this.#moviesModel.moviesData];
-    const filteredMovies = filter[this.#filterType](moviesData);
+    const filteredMovies = filters[this.#filterType](moviesData);
 
     switch (this.#currentSortType) {
       case SortType.DATE:

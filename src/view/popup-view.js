@@ -25,16 +25,18 @@ export default class PopupView extends AbstractView {
   #handleAlreadyWatchedClick = null;
   #popupFilmInfoContainer = null;
   #popupNewCommentView = null;
+  #handleDeleteClick = null;
 
-  constructor({movieData, commentsData, onCloseButtonClick, onFavoriteClick, onWatchlistClick, onAlreadyWatchedClick}) {
+  constructor({movieData, commentsData, onCloseButtonClick, onFavoriteClick, onWatchlistClick, onAlreadyWatchedClick, onDeleteClick, onFormSubmit}) {
     super();
     this.#movieData = movieData;
     this.#commentsData = commentsData;
     this.#popupFilmInfoContainer = new PopupFilmInfoContainerView(onCloseButtonClick);
-    this.#popupNewCommentView = new PopupNewCommentView();
+    this.#popupNewCommentView = new PopupNewCommentView(onFormSubmit);
     this.#handleFavoriteClick = onFavoriteClick;
     this.#handleWatchlistClick = onWatchlistClick;
     this.#handleAlreadyWatchedClick = onAlreadyWatchedClick;
+    this.#handleDeleteClick = onDeleteClick;
 
   }
 
@@ -44,7 +46,10 @@ export default class PopupView extends AbstractView {
 
       if(this.#movieData.comments.length) {
         for (let i = 0; i < this.#movieData.comments.length; i++) {
-          render(new PopupCommentsView(this.#commentsData[i]), this.#popupCommentsListContainer.element);
+          render(new PopupCommentsView({
+            commentsData: this.#commentsData[i],
+            onDeleteClick: this.#handleDeleteClick,
+          }), this.#popupCommentsListContainer.element);
         }
       }
 
