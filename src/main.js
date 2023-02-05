@@ -7,7 +7,7 @@ const siteMainElement = document.querySelector('.main');
 const siteHeaderElement = document.querySelector('.header');
 const siteFooterElement = document.querySelector('.footer__statistics');
 const moviesModel = new MoviesModel();
-const commentsModel = new CommentsModel();
+const commentsModel = new CommentsModel(moviesModel);
 const filterModel = new FilterModel();
 const cinemaPresenter = new CinemaPresenter({headerProfile: siteHeaderElement, mainContainer: siteMainElement, footer: siteFooterElement, moviesModel, commentsModel, filterModel});
 

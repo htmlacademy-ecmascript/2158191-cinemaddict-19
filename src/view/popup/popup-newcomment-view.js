@@ -1,3 +1,4 @@
+import he from 'he';
 import AbstractStatefulView from '../../framework/view/abstract-stateful-view.js';
 
 function createPopupNewCommentTemplate({emoji, comment}) {
@@ -6,7 +7,7 @@ function createPopupNewCommentTemplate({emoji, comment}) {
       <div class="film-details__add-emoji-label">${(emoji) ? `<img src=${emoji} width="55" height="55">` : ''}</div>
 
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" value=${comment}>${comment}</textarea>
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" value=${comment}>${he.encode(comment)}</textarea>
       </label>
 
       <div class="film-details__emoji-list">
@@ -51,12 +52,11 @@ export default class PopupNewCommentView extends AbstractStatefulView {
     this.#handleFormSubmit = onFormSubmit;
     this._setState(this.#initialState);
     this._restoreHandlers();
-    document.addEventListener('keyup', this.#formSubmitHandler);
   }
 
   _restoreHandlers() {
-    this.element.querySelector('.film-details__emoji-list')
-      .addEventListener('click', this.#emojiClickHandler);
+    this.element.querySelector('.film-details__emoji-list').addEventListener('click', this.#emojiClickHandler);
+    this.element.addEventListener('keyup', this.#formSubmitHandler);
   }
 
   get template() {
@@ -69,11 +69,11 @@ export default class PopupNewCommentView extends AbstractStatefulView {
   }
 
   #formSubmitHandler = (evt) => {
-    const {emotion, comment} = this._state;
+    const {emotion} = this._state;
     if (evt.ctrlKey && evt.key === 'Enter') {
       this.#handleFormSubmit({
         emotion,
-        comment,
+        comment: document.querySelector('.film-details__comment-input').value,
       });
       this.reset();
     }

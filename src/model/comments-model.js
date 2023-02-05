@@ -1,17 +1,21 @@
 import { mockComments } from '../mock/data.js';
 import Observable from '../framework/observable.js';
-import MoviesModel from './movies-model.js';
 
 export default class CommentsModel extends Observable {
   #movieComments = mockComments;
-  #moviesData = new MoviesModel().moviesData;
+  #moviesModel = null;
+
+  constructor(moviesModel) {
+    super();
+    this.#moviesModel = moviesModel;
+  }
 
   get comments() {
     return this.#movieComments;
   }
 
   getCommentsToFilm(filmId) {
-    return this.#moviesData.find((movieData) => movieData.id === filmId).comments.map((comment) => this.#movieComments.find((movieComment) => String(comment) === movieComment.id));
+    return this.#moviesModel.moviesData.find((movieData) => movieData.id === filmId).comments.map((comment) => this.comments.find((movieComment) => String(comment) === movieComment.id));
   }
 
   addComment(updateType, update) {

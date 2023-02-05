@@ -98,7 +98,9 @@ export default class MoviePresenter {
   };
 
   #handleFormSubmit = (comment) => {
+    const comments = [...this.#movieData.comments];
     const id = String(Math.random());
+
     this.#scrollPosition = this.#popupComponent.element.scrollTop;
 
     this.#handleDataChange(
@@ -107,11 +109,13 @@ export default class MoviePresenter {
       {id:id, author: 'unknown', ...comment, date: '2005-05-11T16:12:32.554Z'},
     );
 
+    comments.push(id);
+
     this.#handleDataChange(
       UserAction.UPDATE_MOVIE,
       UpdateType.PATCH,
       {...this.#movieData,
-        comments: this.#movieData.comments.push(id),
+        comments,
       }
     );
   };

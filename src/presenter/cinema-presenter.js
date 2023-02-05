@@ -177,6 +177,7 @@ export default class СinemaPresenter {
         this.#moviePresenters.get(data.id).init(data, this.getCommentsData(data.id));
         break;
       case UpdateType.MINOR:
+        this.#currentSortType = SortType.DEFAULT;
         this.#clearFilmList();
         this.#renderSort();
         this.#renderFilmList();
