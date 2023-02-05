@@ -1,3 +1,4 @@
+import he from 'he';
 import { humanizeCommentDate } from '../../utils/utile.js';
 import AbstractView from '../../framework/view/abstract-view.js';
 import { Emotions } from '../../const.js';
@@ -12,7 +13,7 @@ function createPopupCommentTemplate({author, comment, date, emotion}) {
         <img src=${commentEmoji} width="55" height="55" alt="emoji-smile">
       </span>
       <div>
-        <p class="film-details__comment-text">${comment}</p>
+        <p class="film-details__comment-text">${he.encode(comment)}</p>
         <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${commentDate}</span>
@@ -26,9 +27,10 @@ function createPopupCommentTemplate({author, comment, date, emotion}) {
 export default class PopupCommentsView extends AbstractView {
   #commentsData = null;
 
-  constructor(commentsData) {
+  constructor({commentsData, onDeleteClick}) {
     super();
     this.#commentsData = commentsData;
+    this.element.querySelector('.film-details__comment-delete').addEventListener('click', () => onDeleteClick(this.#commentsData));
   }
 
   get template() {

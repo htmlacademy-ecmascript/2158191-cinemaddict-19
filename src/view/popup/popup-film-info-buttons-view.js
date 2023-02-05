@@ -1,3 +1,4 @@
+import { UpdateType } from '../../const.js';
 import AbstractView from '../../framework/view/abstract-view.js';
 
 function createPopupFilmInfoButtonsTemplate({userDetails}) {
@@ -16,15 +17,34 @@ function createPopupFilmInfoButtonsTemplate({userDetails}) {
 
 export default class PopupFilmInfoButtonsView extends AbstractView {
   #movieInfo = null;
+  #handleFavoriteClick = null;
+  #handleWatchlistClick = null;
+  #handleAlreadyWatchedClick = null;
+
   constructor({movieData, onFavoriteClick, onWatchlistClick, onAlreadyWatchedClick}) {
     super();
     this.#movieInfo = movieData;
-    this.element.querySelector('.film-details__control-button--watched').addEventListener('click', onAlreadyWatchedClick);
-    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', onWatchlistClick);
-    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', onFavoriteClick);
+    this.#handleFavoriteClick = onFavoriteClick;
+    this.#handleWatchlistClick = onWatchlistClick;
+    this.#handleAlreadyWatchedClick = onAlreadyWatchedClick;
+    this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#alreadyWatchedClickHandler);
+    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#watchlistClickHandler);
+    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#favoriteClickHandler);
   }
 
   get template() {
     return createPopupFilmInfoButtonsTemplate(this.#movieInfo);
   }
+
+  #favoriteClickHandler = () =>{
+    this.#handleFavoriteClick(UpdateType.PATCH);
+  };
+
+  #watchlistClickHandler = () =>{
+    this.#handleWatchlistClick(UpdateType.PATCH);
+  };
+
+  #alreadyWatchedClickHandler = () =>{
+    this.#handleAlreadyWatchedClick(UpdateType.PATCH);
+  };
 }

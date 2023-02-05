@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeReleaseDate } from '../utils/utile.js';
 import { convertTimeFormat } from '../utils/utile.js';
+import { UpdateType } from '../const.js';
 
 function createFilmCardTemplate({comments, filmInfo: {title, poster, totalRating, release, genre, duration, description}, userDetails }) {
   const releaseYear = humanizeReleaseDate(release.date).slice(-4);
@@ -35,17 +36,35 @@ function createFilmCardTemplate({comments, filmInfo: {title, poster, totalRating
 
 export default class FilmCardView extends AbstractView {
   #movieData = null;
+  #handleFavoriteClick = null;
+  #handleWatchlistClick = null;
+  #handleAlreadyWatchedClick = null;
 
   constructor({movieData, onFilmCardClick, onAlreadyWatchedClick, onFavoriteClick, onWatchlistClick}) {
     super();
     this.#movieData = movieData;
+    this.#handleFavoriteClick = onFavoriteClick;
+    this.#handleWatchlistClick = onWatchlistClick;
+    this.#handleAlreadyWatchedClick = onAlreadyWatchedClick;
     this.element.querySelector('.film-card__link').addEventListener('click', onFilmCardClick);
-    this.element.querySelector('.film-card__controls-item--mark-as-watched').addEventListener('click', onAlreadyWatchedClick);
-    this.element.querySelector('.film-card__controls-item--add-to-watchlist').addEventListener('click', onWatchlistClick);
-    this.element.querySelector('.film-card__controls-item--favorite').addEventListener('click', onFavoriteClick);
+    this.element.querySelector('.film-card__controls-item--mark-as-watched').addEventListener('click', this.#alreadyWatchedClickHandler);
+    this.element.querySelector('.film-card__controls-item--add-to-watchlist').addEventListener('click',this.#watchlistClickHandler);
+    this.element.querySelector('.film-card__controls-item--favorite').addEventListener('click', this.#favoriteClickHandler);
   }
 
   get template() {
     return createFilmCardTemplate(this.#movieData);
   }
+
+  #favoriteClickHandler = () => {
+    this.#handleFavoriteClick(UpdateType.MINOR);
+  };
+
+  #watchlistClickHandler = () => {
+    this.#handleWatchlistClick(UpdateType.MINOR);
+  };
+
+  #alreadyWatchedClickHandler = () => {
+    this.#handleAlreadyWatchedClick(UpdateType.MINOR);
+  };
 }

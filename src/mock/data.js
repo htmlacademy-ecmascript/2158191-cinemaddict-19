@@ -48,12 +48,68 @@ export const mockComments = [{
   date: '2021-05-11T19:12:32.554Z',
   emotion: 'smile'
 },
+
+{
+  id: '6',
+  author: 'Rihanna',
+  comment: 'Shine bright like a diamond',
+  date: '2021-05-11T19:12:32.554Z',
+  emotion: 'smile'
+},
+
+{
+  id: '7',
+  author: 'Donald Trump',
+  comment: 'Shine bright like a diamond',
+  date: '2021-05-11T19:12:32.554Z',
+  emotion: 'smile'
+},
+
+{
+  id: '8',
+  author: 'Volchara',
+  comment: 'This film is awesome',
+  date: '2023-01-26T16:29:32.554Z',
+  emotion: 'smile'
+},
+
+{
+  id: '9',
+  author: 'Zmei Gorynych',
+  comment: 'Turned this sh*t off',
+  date: '2021-09-11T12:12:32.554Z',
+  emotion: 'angry'
+},
+
+{
+  id: '10',
+  author: 'Zmei Gorynych',
+  comment: 'Turn this sh*t off after 5 minutes',
+  date: '2021-09-11T12:12:32.554Z',
+  emotion: 'angry'
+},
+
+{
+  id: '11',
+  author: 'Zmei Gorynych',
+  comment: 'Turn this sh*t off after 5 minutes',
+  date: '2021-09-11T12:12:32.554Z',
+  emotion: 'puke'
+},
+
+{
+  id: '12',
+  author: 'Zmei Gorynych',
+  comment: 'Turn this sh*t off after 5 minutes',
+  date: '2021-09-11T12:12:32.554Z',
+  emotion: 'angry'
+},
 ];
 
 export const mockMovies = [
   {
     id: '0',
-    comments: [1, 2],
+    comments: ['1'],
     filmInfo: {
       title: 'A Little Pony Without The Carpet',
       alternativeTitle: 'Laziness Who Sold Themselves',
@@ -81,7 +137,7 @@ export const mockMovies = [
 
   {
     id: '1',
-    comments: [0, 3, 4],
+    comments: ['2'],
     filmInfo: {
       title: 'Pirates of the Caribbean: Dead Men Tell No Tales',
       alternativeTitle: 'Captain Jack Sparrow',
@@ -109,7 +165,7 @@ export const mockMovies = [
 
   {
     id: '2',
-    comments: [1, 2, 5],
+    comments: ['3'],
     filmInfo: {
       title: 'Avengers: Endgame',
       alternativeTitle: 'Guys in costumes',
@@ -137,7 +193,7 @@ export const mockMovies = [
 
   {
     id: '3',
-    comments: [1],
+    comments: ['4'],
     filmInfo: {
       title: 'Star Wars: The Rise of Skywalker',
       alternativeTitle: 'May force be with you',
@@ -165,7 +221,7 @@ export const mockMovies = [
 
   {
     id: '4',
-    comments: [3, 5],
+    comments: ['5'],
     filmInfo: {
       title: 'Raya and the Last Dragon',
       alternativeTitle: 'Girl and Dragon',
@@ -193,7 +249,7 @@ export const mockMovies = [
 
   {
     id: '5',
-    comments: [1, 2, 3],
+    comments: ['6'],
     filmInfo: {
       title: 'Alice Through the Looking Glass',
       alternativeTitle: 'Strange girl, strange world',
@@ -221,7 +277,7 @@ export const mockMovies = [
 
   {
     id: '6',
-    comments: [1, 2],
+    comments: ['7'],
     filmInfo: {
       title: 'A Little Pony Without The Carpet',
       alternativeTitle: 'Laziness Who Sold Themselves',
@@ -249,7 +305,7 @@ export const mockMovies = [
 
   {
     id: '7',
-    comments: [0, 3, 4],
+    comments: ['8'],
     filmInfo: {
       title: 'Pirates of the Caribbean: Dead Men Tell No Tales',
       alternativeTitle: 'Captain Jack Sparrow',
@@ -277,7 +333,7 @@ export const mockMovies = [
 
   {
     id: '8',
-    comments: [1, 2, 5],
+    comments: ['9'],
     filmInfo: {
       title: 'Avengers: Endgame',
       alternativeTitle: 'Guys in costumes',
@@ -305,7 +361,7 @@ export const mockMovies = [
 
   {
     id: '9',
-    comments: [1],
+    comments: ['10'],
     filmInfo: {
       title: 'Star Wars: The Rise of Skywalker',
       alternativeTitle: 'May force be with you',
@@ -333,7 +389,7 @@ export const mockMovies = [
 
   {
     id: '10',
-    comments: [3, 5],
+    comments: ['11'],
     filmInfo: {
       title: 'Raya and the Last Dragon',
       alternativeTitle: 'Girl and Dragon',
@@ -361,7 +417,7 @@ export const mockMovies = [
 
   {
     id: '11',
-    comments: [1, 2, 3],
+    comments: ['12'],
     filmInfo: {
       title: 'Alice Through the Looking Glass',
       alternativeTitle: 'Strange girl, strange world',
