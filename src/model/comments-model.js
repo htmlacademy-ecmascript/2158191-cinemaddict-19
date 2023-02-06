@@ -1,33 +1,28 @@
-import { mockComments } from '../mock/data.js';
 import Observable from '../framework/observable.js';
 
 export default class CommentsModel extends Observable {
-  #movieComments = mockComments;
-  #moviesModel = null;
+  #movieComments = [];
   #commentsApiService = null;
 
-  constructor({moviesModel, commentsApiService}) {
+  constructor(commentsApiService) {
     super();
-    this.#moviesModel = moviesModel;
     this.#commentsApiService = commentsApiService;
-    const movieId = '1';
-
-    this.#commentsApiService.getComments(movieId).then((comments) => {
-      console.log(comments);
-      // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
-      // а ещё на сервере используется snake_case, а у нас camelCase.
-      // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
-      // Есть вариант получше - паттерн "Адаптер"
-    });
   }
 
   get comments() {
     return this.#movieComments;
   }
 
-  getCommentsToFilm(filmId) {
-    return this.#moviesModel.moviesData.find((movieData) => movieData.id === filmId).comments.map((comment) => this.comments.find((movieComment) => String(comment) === movieComment.id));
+
+  async init(movieId) {
+    try {
+      this.#movieComments = await this.#commentsApiService.getComments(movieId);
+      return this.#movieComments;
+    } catch(err) {
+      this.#movieComments = [];
+    }
   }
+
 
   addComment(updateType, update) {
     this.#movieComments = [

@@ -35,6 +35,7 @@ export default class СinemaPresenter {
   #showMoreButtonComponent = null;
   #headerProfileComponent = null;
   #sortComponent = null;
+  #footerStatisticsComponent = null;
 
   #renderedFilmCardCount = FILM_CARD_COUNT_PER_STEP;
   #filterPresenter = null;
@@ -87,7 +88,7 @@ export default class СinemaPresenter {
     render(this.#filmListContainerComponent, this.#filmListComponent.element);
 
     for (let i = 0; i < Math.min(this.moviesData.length, this.#renderedFilmCardCount); i++) {
-      this.#renderFilmCardWithPopup(this.moviesData[i], this.getCommentsData(this.moviesData[i].id));
+      this.#renderFilmCardWithPopup(this.moviesData[i]);
     }
 
     if (this.moviesData.length > this.#renderedFilmCardCount) {
@@ -98,17 +99,18 @@ export default class СinemaPresenter {
   }
 
   #renderFooterStatistics() {
-    render(new FooterStatisticsView(this.moviesData.length), this.#footer);
+    render(this.#footerStatisticsComponent = new FooterStatisticsView(this.moviesData.length), this.#footer);
   }
 
 
-  #renderFilmCardWithPopup(movieData, commentsData) {
+  #renderFilmCardWithPopup(movieData) {
     this.#moviePresenter = new MoviePresenter({
       filmListContainerComponent: this.#filmListContainerComponent.element,
       onDataChange: this.#handleViewAction,
       onPopupStateChange: this.#handlePopupStateChange,
+      commentsModel: this.#commentsModel
     });
-    this.#moviePresenter.init(movieData, commentsData);
+    this.#moviePresenter.init(movieData);
     this.#moviePresenters.set(movieData.id, this.#moviePresenter);
   }
 
@@ -128,10 +130,6 @@ export default class СinemaPresenter {
     return this.#moviesModel.moviesData;
   }
 
-  getCommentsData(movieId) {
-    return this.#commentsModel.getCommentsToFilm(movieId);
-  }
-
   #clearFilmList() {
     this.#moviePresenters.forEach((presenter) => presenter.destroy());
     this.#moviePresenters.clear();
@@ -145,7 +143,7 @@ export default class СinemaPresenter {
     if (this.moviesData.length > this.#renderedFilmCardCount) {
       this.moviesData
         .slice(this.#renderedFilmCardCount, this.#renderedFilmCardCount + FILM_CARD_COUNT_PER_STEP)
-        .forEach((movieData) => this.#renderFilmCardWithPopup(movieData, this.getCommentsData(movieData.id)));
+        .forEach((movieData) => this.#renderFilmCardWithPopup(movieData));
 
       this.#filmListContainerComponent.element.appendChild(this.#showMoreButtonComponent.element);
 
@@ -174,7 +172,7 @@ export default class СinemaPresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#moviePresenters.get(data.id).init(data, this.getCommentsData(data.id));
+        this.#moviePresenters.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
         this.#currentSortType = SortType.DEFAULT;
@@ -182,7 +180,12 @@ export default class СinemaPresenter {
         this.#renderSort();
         this.#renderFilmList();
         break;
-      default:
+      case UpdateType.INIT:
+        this.#clearFilmList();
+        remove (this.#footerStatisticsComponent);
+        this.#renderSort();
+        this.#renderFilmList();
+        this.#renderFooterStatistics();
         break;
     }
   };

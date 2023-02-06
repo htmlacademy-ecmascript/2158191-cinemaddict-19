@@ -36,4 +36,5 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
+  INIT: 'INIT',
 };

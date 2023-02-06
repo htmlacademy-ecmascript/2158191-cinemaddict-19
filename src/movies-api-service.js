@@ -15,7 +15,7 @@ export default class MoviesApiService extends ApiService {
     const response = await this._load({
       url: `movies/${movieData.id}`,
       method: Method.PUT,
-      body: JSON.stringify(movieData),
+      body: JSON.stringify(this.#adaptToServer(movieData)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
@@ -28,10 +28,10 @@ export default class MoviesApiService extends ApiService {
     const adaptedMovie = {...movie,
       'film_info': {
         title: movie.filmInfo.title,
-        alternativeTitle: movie.filmInfo.alternativeTitle,
-        totalRating: movie.filmInfo.totalRating,
+        'alternative_title': movie.filmInfo.alternativeTitle,
+        'total_rating': movie.filmInfo.totalRating,
         poster: movie.filmInfo.poster,
-        ageRating: movie.filmInfo.ageRating,
+        'age_rating': movie.filmInfo.ageRating,
         director: movie.filmInfo.director,
         writers: movie.filmInfo.writers,
         actors: movie.filmInfo.actors,

@@ -1,17 +1,13 @@
-import { mockMovies } from '../mock/data.js';
 import Observable from '../framework/observable.js';
+import {UpdateType} from '../const.js';
 
 export default class MoviesModel extends Observable {
-  #moviesData = mockMovies;
+  #moviesData = [];
   #moviesApiService = null;
 
   constructor({moviesApiService}) {
     super();
     this.#moviesApiService = moviesApiService;
-
-    this.#moviesApiService.movies.then((movies) => {
-      console.log(movies.map((movie)=> this.#adaptToClient(movie)));
-    });
   }
 
   get moviesData() {
@@ -51,20 +47,35 @@ export default class MoviesModel extends Observable {
     return adaptedMovie;
   }
 
+  async init() {
+    try {
+      const movies = await this.#moviesApiService.movies;
+      this.#moviesData = movies.map(this.#adaptToClient);
+    } catch(err) {
+      this.#moviesData = [];
+    }
+    this._notify(UpdateType.INIT);
+  }
 
-  updateMovie(updateType, update) {
+  async updateMovie(updateType, update) {
     const index = this.#moviesData.findIndex((movie) => movie.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t update unexisting movie');
     }
 
-    this.#moviesData = [
-      ...this.#moviesData.slice(0, index),
-      update,
-      ...this.#moviesData.slice(index + 1),
-    ];
+    try {
+      const response = await this.#moviesApiService.updateMovie(update);
+      const updatedMovie = this.#adaptToClient(response);
 
-    this._notify(updateType, update);
+      this.#moviesData = [
+        ...this.#moviesData.slice(0, index),
+        updatedMovie,
+        ...this.#moviesData.slice(index + 1),
+      ];
+      this._notify(updateType, update);
+    } catch(err) {
+      throw new Error('Can\'t update movie');
+    }
   }
 }
