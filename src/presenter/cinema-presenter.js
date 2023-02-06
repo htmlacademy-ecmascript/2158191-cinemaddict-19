@@ -42,6 +42,7 @@ export default class СinemaPresenter {
   #moviePresenters = new Map();
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
+  #isLoading = true;
 
   #filmListContainerComponent = new FilmListContainerView();
   #contentComponent = new ContentView();
@@ -74,7 +75,13 @@ export default class СinemaPresenter {
   #renderFilmList() {
     render(this.#contentComponent, this.#mainContainer);
 
-    if(!this.moviesData.length) {
+    if (this.#isLoading) {
+      this.#filmListComponent = new FilmListView('Loading...');
+
+      render(this.#filmListComponent, this.#contentComponent.element);
+
+      return;
+    } else if (!this.moviesData.length) {
       this.#filmListComponent = new FilmListView(HeaderText[this.#filterType]);
 
       render(this.#filmListComponent, this.#contentComponent.element);
@@ -181,6 +188,7 @@ export default class СinemaPresenter {
         this.#renderFilmList();
         break;
       case UpdateType.INIT:
+        this.#isLoading = false;
         this.#clearFilmList();
         remove (this.#footerStatisticsComponent);
         this.#renderSort();
@@ -210,7 +218,6 @@ export default class СinemaPresenter {
   init() {
     this.#renderHeaderProfile();
     this.#renderMenu();
-    this.#renderSort();
     this.#renderFilmList();
     this.#renderFooterStatistics();
   }
