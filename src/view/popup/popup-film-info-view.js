@@ -52,7 +52,7 @@ function createPopupFilmInfoTemplate({filmInfo: {title, alternativeTitle, poster
                 <td class="film-details__cell">${release.releaseCountry}</td>
               </tr>
               <tr class="film-details__row">
-                <td class="film-details__term">Genres</td>
+                <td class="film-details__term">Genre${(genre.length > 1) ? 's' : ''}</td>
                 <td class="film-details__cell">
                   <span class="film-details__genre">${genre}</span>
               </tr>

@@ -15,14 +15,16 @@ export default class MoviePresenter {
   #filmListContainerComponent = null;
   #handleDataChange = null;
   #handlePopupStateChange = null;
+  #commentsModel = null;
 
   #popupState = PopupState.CLOSED;
   #scrollPosition = 0;
 
-  constructor({filmListContainerComponent, onDataChange, onPopupStateChange}) {
+  constructor({filmListContainerComponent, onDataChange, onPopupStateChange, commentsModel}) {
     this.#filmListContainerComponent = filmListContainerComponent;
     this.#handleDataChange = onDataChange;
     this.#handlePopupStateChange = onPopupStateChange;
+    this.#commentsModel = commentsModel;
   }
 
 
@@ -44,7 +46,8 @@ export default class MoviePresenter {
         userDetails: {
           favorite: !this.#movieData.userDetails.favorite,
           watchlist: this.#movieData.userDetails.watchlist,
-          alreadyWatched: this.#movieData.userDetails.alreadyWatched
+          watchingDate: this.#movieData.userDetails.watchingDate,
+          alreadyWatched: this.#movieData.userDetails.alreadyWatched,
         }
       });
   };
@@ -59,6 +62,7 @@ export default class MoviePresenter {
         userDetails: {
           watchlist: !this.#movieData.userDetails.watchlist,
           favorite: this.#movieData.userDetails.favorite,
+          watchingDate: this.#movieData.userDetails.watchingDate,
           alreadyWatched: this.#movieData.userDetails.alreadyWatched
         }
       });
@@ -73,6 +77,7 @@ export default class MoviePresenter {
         ...this.#movieData,
         userDetails: {
           alreadyWatched: !this.#movieData.userDetails.alreadyWatched,
+          watchingDate: this.#movieData.userDetails.watchingDate,
           watchlist: this.#movieData.userDetails.watchlist,
           favorite: this.#movieData.userDetails.favorite,
         }
@@ -120,24 +125,34 @@ export default class MoviePresenter {
     );
   };
 
-  init(movieData, commentsData) {
+  init(movieData) {
     this.#movieData = movieData;
-
     const prevPopupComponent = this.#popupComponent;
     const prevFilmCardComponent = this.#filmCardComponent;
 
-    this.#popupComponent = new PopupView({
-      movieData: this.#movieData,
-      commentsData,
-      onCloseButtonClick: () => {
-        this.#closePopup();
-        document.removeEventListener('keydown', this.#escKeyDownHandler);
-      },
-      onFavoriteClick: this.#handleFavoriteClick,
-      onWatchlistClick: this.#handleWatchlistClick,
-      onAlreadyWatchedClick: this.#handleAlreadyWatchedClick,
-      onDeleteClick: this.#handleDeleteClick,
-      onFormSubmit: this.#handleFormSubmit,
+    this.#commentsModel.init(movieData.id).then((commentsData) => {
+
+      this.#popupComponent = new PopupView({
+        movieData: this.#movieData,
+        commentsData,
+        onCloseButtonClick: () => {
+          this.#closePopup();
+          document.removeEventListener('keydown', this.#escKeyDownHandler);
+        },
+        onFavoriteClick: this.#handleFavoriteClick,
+        onWatchlistClick: this.#handleWatchlistClick,
+        onAlreadyWatchedClick: this.#handleAlreadyWatchedClick,
+        onDeleteClick: this.#handleDeleteClick,
+        onFormSubmit: this.#handleFormSubmit,
+      });
+
+      if (prevPopupComponent !== null && document.body.contains(prevPopupComponent.element)) {
+        replace(this.#popupComponent, prevPopupComponent);
+        this.#popupComponent.element.scrollTo(0, this.#scrollPosition);
+        this.#scrollPosition = 0;
+      }
+
+      remove(prevPopupComponent);
     });
 
     this.#filmCardComponent = new FilmCardView({
@@ -151,23 +166,15 @@ export default class MoviePresenter {
       onAlreadyWatchedClick: this.#handleAlreadyWatchedClick,
     });
 
-    if (prevFilmCardComponent === null || prevPopupComponent === null) {
+    if (prevFilmCardComponent === null) {
       render(this.#filmCardComponent, this.#filmListContainerComponent);
       return;
     }
 
-    if (document.body.contains(prevPopupComponent.element)) {
-      replace(this.#popupComponent, prevPopupComponent);
-      this.#popupComponent.element.scrollTo(0, this.#scrollPosition);
-      this.#scrollPosition = 0;
-    }
-
     if (this.#filmListContainerComponent.contains(prevFilmCardComponent.element)) {
       replace(this.#filmCardComponent, prevFilmCardComponent);
+      remove(prevFilmCardComponent);
     }
-
-    remove(prevPopupComponent);
-    remove(prevFilmCardComponent);
   }
 
   resetView() {
