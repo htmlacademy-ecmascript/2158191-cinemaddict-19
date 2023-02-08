@@ -14,7 +14,7 @@ const siteFooterElement = document.querySelector('.footer__statistics');
 const moviesModel = new MoviesModel({moviesApiService: new MoviesApiService(END_POINT, AUTHORIZATION)});
 const commentsModel = new CommentsModel(new CommentsApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
-const cinemaPresenter = new CinemaPresenter({headerProfile: siteHeaderElement, mainContainer: siteMainElement, footer: siteFooterElement, moviesModel, commentsModel, filterModel});
+const cinemaPresenter = new CinemaPresenter({headerContainer: siteHeaderElement, mainContainer: siteMainElement, footer: siteFooterElement, moviesModel, commentsModel, filterModel});
 
 moviesModel.init();
 cinemaPresenter.init();

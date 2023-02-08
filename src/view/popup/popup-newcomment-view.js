@@ -1,9 +1,9 @@
 import he from 'he';
 import AbstractStatefulView from '../../framework/view/abstract-stateful-view.js';
 
-function createPopupNewCommentTemplate({emoji, comment}) {
+function createPopupNewCommentTemplate({emoji, comment, isDisabled}) {
   return (
-    `<form class="film-details__new-comment" action="" method="get">
+    `<form class="film-details__new-comment" action="" method="get" ${isDisabled ? 'disabled' : ''}>
       <div class="film-details__add-emoji-label">${(emoji) ? `<img src=${emoji} width="55" height="55">` : ''}</div>
 
       <label class="film-details__comment-label">
@@ -45,6 +45,7 @@ export default class PopupNewCommentView extends AbstractStatefulView {
     emoji: '',
     comment: '',
     emotion: '',
+    isDisabled: false,
   };
 
   constructor(onFormSubmit) {
@@ -60,8 +61,8 @@ export default class PopupNewCommentView extends AbstractStatefulView {
   }
 
   get template() {
-    const {emoji, comment} = this._state;
-    return createPopupNewCommentTemplate({emoji, comment});
+    const {emoji, comment, isDisabled} = this._state;
+    return createPopupNewCommentTemplate({emoji, comment, isDisabled});
   }
 
   reset() {

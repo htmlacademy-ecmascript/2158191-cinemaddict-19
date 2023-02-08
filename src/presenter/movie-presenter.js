@@ -1,12 +1,14 @@
 import PopupView from '../view/popup-view';
 import FilmCardView from '../view/film-card-view.js';
 import { render, remove, replace } from '../framework/render';
-import { UserAction, UpdateType } from '../const.js';
+import { UserAction, UpdateType, FilterType } from '../const.js';
 
 const PopupState = {
   CLOSED: 'CLOSED',
   OPENED: 'OPENED',
 };
+
+let globalPopupState = 'CLOSED'; //флаг, который информирует о том открыт ли какой-либо попап
 
 export default class MoviePresenter {
   #popupComponent = null;
@@ -16,15 +18,17 @@ export default class MoviePresenter {
   #handleDataChange = null;
   #handlePopupStateChange = null;
   #commentsModel = null;
+  #filterModel = null;
 
   #popupState = PopupState.CLOSED;
   #scrollPosition = 0;
 
-  constructor({filmListContainerComponent, onDataChange, onPopupStateChange, commentsModel}) {
+  constructor({filmListContainerComponent, onDataChange, onPopupStateChange, commentsModel, filterModel}) {
     this.#filmListContainerComponent = filmListContainerComponent;
     this.#handleDataChange = onDataChange;
     this.#handlePopupStateChange = onPopupStateChange;
     this.#commentsModel = commentsModel;
+    this.#filterModel = filterModel;
   }
 
 
@@ -36,11 +40,11 @@ export default class MoviePresenter {
     }
   };
 
-  #handleFavoriteClick = (updateType) => {
+  #handleFavoriteClick = () => {
     this.#scrollPosition = this.#popupComponent.element.scrollTop;
     this.#handleDataChange(
       UserAction.UPDATE_MOVIE,
-      updateType,
+      (globalPopupState !== PopupState.CLOSED || this.#filterModel.filter === FilterType.ALL) ? UpdateType.PATCH : UpdateType.MINOR,
       {
         ...this.#movieData,
         userDetails: {
@@ -52,11 +56,11 @@ export default class MoviePresenter {
       });
   };
 
-  #handleWatchlistClick = (updateType) => {
+  #handleWatchlistClick = () => {
     this.#scrollPosition = this.#popupComponent.element.scrollTop;
     this.#handleDataChange(
       UserAction.UPDATE_MOVIE,
-      updateType,
+      (globalPopupState !== PopupState.CLOSED || this.#filterModel.filter === FilterType.ALL) ? UpdateType.PATCH : UpdateType.MINOR,
       {
         ...this.#movieData,
         userDetails: {
@@ -68,11 +72,11 @@ export default class MoviePresenter {
       });
   };
 
-  #handleAlreadyWatchedClick = (updateType) => {
+  #handleAlreadyWatchedClick = () => {
     this.#scrollPosition = this.#popupComponent.element.scrollTop;
     this.#handleDataChange(
       UserAction.UPDATE_MOVIE,
-      updateType,
+      (globalPopupState !== PopupState.CLOSED || this.#filterModel.filter === FilterType.ALL) ? UpdateType.PATCH : UpdateType.MINOR,
       {
         ...this.#movieData,
         userDetails: {
@@ -88,40 +92,21 @@ export default class MoviePresenter {
     this.#scrollPosition = this.#popupComponent.element.scrollTop;
 
     this.#handleDataChange(
-      UserAction.UPDATE_MOVIE,
-      UpdateType.PATCH,
-      {...this.#movieData,
-        comments: this.#movieData.comments.filter((commentId) => commentId !== comment.id)
-      }
-    );
-
-    this.#handleDataChange(
       UserAction.DELETE_COMMENT,
-      '',
-      comment
+      UpdateType.PATCH,
+      {comment, movie: {...this.#movieData,
+        comments: this.#movieData.comments.filter((commentId) => commentId !== comment.id)
+      }}
     );
   };
 
   #handleFormSubmit = (comment) => {
-    const comments = [...this.#movieData.comments];
-    const id = String(Math.random());
-
     this.#scrollPosition = this.#popupComponent.element.scrollTop;
 
     this.#handleDataChange(
       UserAction.ADD_COMMENT,
-      '',
-      {id:id, author: 'unknown', ...comment, date: '2005-05-11T16:12:32.554Z'},
-    );
-
-    comments.push(id);
-
-    this.#handleDataChange(
-      UserAction.UPDATE_MOVIE,
       UpdateType.PATCH,
-      {...this.#movieData,
-        comments,
-      }
+      {comment, movieId: this.#movieData.id},
     );
   };
 
@@ -177,6 +162,42 @@ export default class MoviePresenter {
     }
   }
 
+  setEditingFilmInfo() {
+    if(globalPopupState !== PopupState.CLOSED) {
+      this.#popupComponent.setEditingFilmInfo();
+      return;
+    }
+    this.#filmCardComponent.updateElement({
+      isDisabled: true,
+    });
+  }
+
+  setSavingComment() {
+    this.#popupComponent.setSavingComment();
+  }
+
+  setDeletingComment(comment) {
+    this.#popupComponent.setDeletingComment(comment);
+  }
+
+  setAbortingEditFilmInfo() {
+    if(globalPopupState !== PopupState.CLOSED) {
+      this.#popupComponent.setAbortingEditFilmInfo();
+      return;
+    }
+    this.#filmCardComponent.shake(this.#filmCardComponent.updateElement({
+      isDisabled: false,
+    }));
+  }
+
+  setAbortingSaveComment() {
+    this.#popupComponent.setAbortingSaveComment();
+  }
+
+  setAbortingDeleteComment(comment) {
+    this.#popupComponent.setAbortingDeleteComment(comment);
+  }
+
   resetView() {
     if (this.#popupState !== PopupState.CLOSED) {
       this.#closePopup();
@@ -192,14 +213,14 @@ export default class MoviePresenter {
   #closePopup() {
     remove(this.#popupComponent);
     document.body.classList.remove('hide-overflow');
-    this.popupState = PopupState.CLOSED;
+    this.popupState = globalPopupState = PopupState.CLOSED;
     this.#popupComponent.resetPopupNewCommentView();
   }
 
   #showPopup() {
     this.#handlePopupStateChange();
     render(this.#popupComponent, document.body);
-    this.#popupState = PopupState.OPENED;
+    this.#popupState = globalPopupState = PopupState.OPENED;
     document.body.classList.add('hide-overflow');
   }
 }

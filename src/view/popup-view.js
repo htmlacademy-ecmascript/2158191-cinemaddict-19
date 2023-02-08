@@ -19,6 +19,7 @@ export default class PopupView extends AbstractView {
   #movieData = null;
   #commentsData = null;
   #popupCommentsContainer = null;
+  #popupFilmInfoButtons = null;
 
   #handleFavoriteClick = null;
   #handleWatchlistClick = null;
@@ -26,6 +27,8 @@ export default class PopupView extends AbstractView {
   #popupFilmInfoContainer = null;
   #popupNewCommentView = null;
   #handleDeleteClick = null;
+  #popupCommentsView = null;
+  #popupCommentsViews = new Map();
 
   constructor({movieData, commentsData, onCloseButtonClick, onFavoriteClick, onWatchlistClick, onAlreadyWatchedClick, onDeleteClick, onFormSubmit}) {
     super();
@@ -44,19 +47,20 @@ export default class PopupView extends AbstractView {
     if (!this.#element) {
       this.#popupCommentsContainer = new PopupCommentsContainerView(this.#movieData.comments.length);
 
-      if(this.#movieData.comments.length) {
-        for (let i = 0; i < this.#movieData.comments.length; i++) {
-          render(new PopupCommentsView({
+      if(this.#commentsData.length) {
+        for (let i = 0; i < this.#commentsData.length; i++) {
+          render(this.#popupCommentsView = new PopupCommentsView({
             commentsData: this.#commentsData[i],
             onDeleteClick: this.#handleDeleteClick,
           }), this.#popupCommentsListContainer.element);
+          this.#popupCommentsViews.set(this.#commentsData[i].id, this.#popupCommentsView);
         }
       }
 
       render(this.#popupCommentsListContainer, this.#popupCommentsContainer.element);
       render(this.#popupNewCommentView, this.#popupCommentsContainer.element);
       render(new PopupFilmInfoView(this.#movieData), this.#popupFilmInfoContainer.element);
-      render(new PopupFilmInfoButtonsView({
+      render(this.#popupFilmInfoButtons = new PopupFilmInfoButtonsView({
         movieData: this.#movieData,
         onFavoriteClick: this.#handleFavoriteClick,
         onWatchlistClick: this.#handleWatchlistClick,
@@ -74,5 +78,53 @@ export default class PopupView extends AbstractView {
 
   resetPopupNewCommentView() {
     this.#popupNewCommentView.reset();
+  }
+
+  setSavingComment() {
+    this.#popupNewCommentView.updateElement({
+      isDisabled: true,
+    });
+  }
+
+  setEditingFilmInfo() {
+    this.#popupFilmInfoButtons.updateElement({
+      isDisabled: true,
+    });
+  }
+
+  setDeletingComment(comment) {
+    this.#popupCommentsViews.get(comment.id).updateElement({
+      isDisabled: true,
+      isDeleting: true,
+    });
+  }
+
+  setAbortingEditFilmInfo() {
+    const resetFormState = () => {
+      this.#popupFilmInfoButtons.updateElement({
+        isDisabled: false,
+      });
+    };
+
+    this.#popupFilmInfoButtons.shake(resetFormState);
+  }
+
+  setAbortingSaveComment() {
+    const resetFormState = () => {
+      this.#popupNewCommentView.updateElement({
+        isDisabled: false,
+      });
+    };
+    this.#popupFilmInfoButtons.shake(resetFormState);
+  }
+
+  setAbortingDeleteComment(comment) {
+    const resetFormState = () => {
+      this.#popupCommentsViews.get(comment.id).updateElement({
+        isDisabled: false,
+        isDeleting: false,
+      });
+    };
+    this.#popupCommentsViews.get(comment.id).shake(resetFormState);
   }
 }

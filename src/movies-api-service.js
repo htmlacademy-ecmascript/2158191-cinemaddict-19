@@ -25,29 +25,32 @@ export default class MoviesApiService extends ApiService {
   }
 
   #adaptToServer(movie) {
+    const filmInfo = movie.filmInfo;
+    const userDetails = movie.userDetails;
+
     const adaptedMovie = {...movie,
       'film_info': {
-        title: movie.filmInfo.title,
-        'alternative_title': movie.filmInfo.alternativeTitle,
-        'total_rating': movie.filmInfo.totalRating,
-        poster: movie.filmInfo.poster,
-        'age_rating': movie.filmInfo.ageRating,
-        director: movie.filmInfo.director,
-        writers: movie.filmInfo.writers,
-        actors: movie.filmInfo.actors,
+        title: filmInfo.title,
+        'alternative_title': filmInfo.alternativeTitle,
+        'total_rating': filmInfo.totalRating,
+        poster: filmInfo.poster,
+        'age_rating': filmInfo.ageRating,
+        director: filmInfo.director,
+        writers: filmInfo.writers,
+        actors: filmInfo.actors,
         release: {
-          date: movie.filmInfo.release.date,
-          'release_country': movie.filmInfo.release.releaseCountry,
+          date: filmInfo.release.date,
+          'release_country':filmInfo.release.releaseCountry,
         },
-        duration: movie.filmInfo.duration,
-        genre: movie.filmInfo.genre,
-        description: movie.filmInfo.description,
+        duration: filmInfo.duration,
+        genre: filmInfo.genre,
+        description: filmInfo.description,
       },
       'user_details': {
-        watchlist: movie.userDetails.watchlist,
-        'already_watched': movie.userDetails.alreadyWatched,
-        'watching_date': movie.userDetails.watchingDate,
-        favorite: movie.userDetails.favorite,
+        watchlist: userDetails.watchlist,
+        'already_watched': userDetails.alreadyWatched,
+        'watching_date': userDetails.watchingDate,
+        favorite: userDetails.favorite,
       }
     };
 

@@ -23,28 +23,59 @@ export default class CommentsModel extends Observable {
     }
   }
 
+  #adaptToClient(movie) {
+    const filmInfo = movie['film_info'];
+    const userDetails = movie['user_details'];
 
-  addComment(updateType, update) {
-    this.#movieComments = [
-      update,
-      ...this.#movieComments,
-    ];
+    const adaptedMovie = {...movie,
+      filmInfo: {
+        title: filmInfo.title,
+        alternativeTitle: filmInfo['alternative_title'],
+        totalRating: filmInfo['total_rating'],
+        poster: filmInfo.poster,
+        ageRating: filmInfo['age_rating'],
+        director: filmInfo.director,
+        writers: filmInfo.writers,
+        actors: filmInfo.actors,
+        release: {
+          date:filmInfo.release.date,
+          releaseCountry: filmInfo.release['release_country'],
+        },
+        duration: filmInfo.duration,
+        genre: filmInfo.genre,
+        description: filmInfo.description,
+      },
+      userDetails: {
+        watchlist: userDetails.watchlist,
+        alreadyWatched: userDetails.already_watched,
+        watchingDate: userDetails.watching_date,
+        favorite: userDetails.favorite,
+      }
+    };
 
-    this._notify(updateType, update);
+    delete adaptedMovie['user_details'];
+    delete adaptedMovie['film_info'];
+
+    return adaptedMovie;
   }
 
-  deleteComment(updateType, update) {
-    const index = this.#movieComments.findIndex((comment) => comment.id === update.id);
+  async addComment(updateType, update) {
+    try {
+      const newComment = await this.#commentsApiService.addComment(update);
+      this.#movieComments = newComment.comments;
 
-    if (index === -1) {
-      throw new Error('Can\'t delete unexisting movie');
+      this._notify(updateType, this.#adaptToClient(newComment.movie));
+    } catch(err) {
+      throw new Error('Can\'t add comment');
     }
+  }
 
-    this.#movieComments = [
-      ...this.#movieComments.slice(0, index),
-      ...this.#movieComments.slice(index + 1),
-    ];
-
-    this._notify(updateType);
+  async deleteComment(updateType, update) {
+    try {
+      await this.#commentsApiService.deleteComment(update.comment.id);
+      this._notify(updateType, update.movie);
+    } catch(err) {
+      throw new Error('Can\'t delete comment');
+    }
   }
 }

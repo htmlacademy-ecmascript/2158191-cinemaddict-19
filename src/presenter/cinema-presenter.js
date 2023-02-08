@@ -5,12 +5,13 @@ import FilmListContainerView from '../view/film-list-container.js';
 import FilmListView from '../view/film-list-view.js';
 import FooterStatisticsView from '../view/footer-statistics-view.js';
 import MoviePresenter from './movie-presenter.js';
-import ProfileRatingView from '../view/profile-rating-view.js';
 import { render, remove } from '../framework/render.js';
 import { sortMovieDateDown, sortMovieRatingDown } from '../utils/utile.js';
 import { SortType, UserAction, UpdateType, FilterType } from '../const.js';
 import FilterPresenter from './filter-presenter.js';
+import ProfilePresenter from './profile-presenter.js';
 import { filters } from '../utils/filter.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 const HeaderText = {
   [FilterType.ALL]: 'There are no movies in our database',
@@ -20,10 +21,14 @@ const HeaderText = {
 };
 
 const FILM_CARD_COUNT_PER_STEP = 5;
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class СinemaPresenter {
   #mainContainer = null;
-  #headerProfile = null;
+  #headerContainer = null;
   #footer = null;
 
   #moviesModel = null;
@@ -33,7 +38,7 @@ export default class СinemaPresenter {
   #moviePresenter = null;
   #filmListComponent = null;
   #showMoreButtonComponent = null;
-  #headerProfileComponent = null;
+  #profilePresenter = null;
   #sortComponent = null;
   #footerStatisticsComponent = null;
 
@@ -43,36 +48,53 @@ export default class СinemaPresenter {
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
   #isLoading = true;
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   #filmListContainerComponent = new FilmListContainerView();
   #contentComponent = new ContentView();
 
-  constructor({headerProfile, mainContainer, footer, moviesModel, commentsModel, filterModel}) {
+  constructor({headerContainer, mainContainer, footer, moviesModel, commentsModel, filterModel}) {
     this.#mainContainer = mainContainer;
-    this.#headerProfile = headerProfile;
+    this.#headerContainer = headerContainer;
     this.#footer = footer;
     this.#moviesModel = moviesModel;
     this.#commentsModel = commentsModel;
     this.#filterModel = filterModel;
+
     this.#moviesModel.addObserver(this.#handleModelEvent);
     this.#commentsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   #renderHeaderProfile() {
-    render(this.#headerProfileComponent = new ProfileRatingView(), this.#headerProfile);
+    this.#profilePresenter = new ProfilePresenter({
+      headerContainer: this.#headerContainer,
+      moviesModel: this.#moviesModel
+    });
+
+    this.#profilePresenter.init();
   }
 
   #renderMenu() {
-    this.#filterPresenter = new FilterPresenter({mainContainer: this.#mainContainer, moviesModel: this.#moviesModel, filterModel: this.#filterModel});
-    this.#filterPresenter.init(this.moviesData);
+    this.#filterPresenter = new FilterPresenter({
+      mainContainer: this.#mainContainer,
+      moviesModel: this.#moviesModel,
+      filterModel: this.#filterModel});
+
+    this.#filterPresenter.init();
   }
 
   #renderSort() {
-    render(this.#sortComponent = new SortView({currentSortType: this.#currentSortType, onSortTypeChange: this.#handleSortTypeChange}), this.#mainContainer);
+    render(this.#sortComponent = new SortView({
+      currentSortType: this.#currentSortType,
+      onSortTypeChange: this.#handleSortTypeChange}), this.#mainContainer);
   }
 
   #renderFilmList() {
+    this.#renderedFilmCardCount = FILM_CARD_COUNT_PER_STEP;
     render(this.#contentComponent, this.#mainContainer);
 
     if (this.#isLoading) {
@@ -115,7 +137,8 @@ export default class СinemaPresenter {
       filmListContainerComponent: this.#filmListContainerComponent.element,
       onDataChange: this.#handleViewAction,
       onPopupStateChange: this.#handlePopupStateChange,
-      commentsModel: this.#commentsModel
+      commentsModel: this.#commentsModel,
+      filterModel: this.#filterModel,
     });
     this.#moviePresenter.init(movieData);
     this.#moviePresenters.set(movieData.id, this.#moviePresenter);
@@ -162,18 +185,37 @@ export default class СinemaPresenter {
     }
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
-        this.#moviesModel.updateMovie(updateType, update);
+        this.#moviePresenters.get(update.id).setEditingFilmInfo();
+        try{
+          await this.#moviesModel.updateMovie(updateType, update);
+        } catch(err) {
+          this.#moviePresenters.get(update.id).setAbortingEditFilmInfo();
+        }
         break;
       case UserAction.ADD_COMMENT:
-        this.#commentsModel.addComment(updateType, update);
+        this.#moviePresenters.get(update.movieId).setSavingComment();
+        try {
+          await this.#commentsModel.addComment(updateType, update);
+        } catch(err) {
+          this.#moviePresenters.get(update.movieId).setAbortingSaveComment();
+        }
         break;
       case UserAction.DELETE_COMMENT:
-        this.#commentsModel.deleteComment(updateType, update);
+        this.#moviePresenters.get(update.movie.id).setDeletingComment(update.comment);
+        try{
+          await this.#commentsModel.deleteComment(updateType, update);
+        } catch {
+          this.#moviePresenters.get(update.movie.id).setAbortingDeleteComment((update.comment));
+        }
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
