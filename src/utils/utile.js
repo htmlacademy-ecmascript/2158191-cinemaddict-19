@@ -5,10 +5,6 @@ dayjs.extend(relativeTime);
 
 const RELEASE_DATE_FORMAT = 'D MMMM YYYY';
 
-export function getRandomArrayElement(items) {
-  return items[Math.floor(Math.random() * items.length)];
-}
-
 export function humanizeReleaseDate(releaseDate) {
   return releaseDate ? dayjs(releaseDate).format(RELEASE_DATE_FORMAT) : '';
 }
