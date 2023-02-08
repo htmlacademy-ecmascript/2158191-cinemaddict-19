@@ -15,29 +15,32 @@ export default class MoviesModel extends Observable {
   }
 
   #adaptToClient(movie) {
+    const filmInfo = movie['film_info'];
+    const userDetails = movie['user_details'];
+
     const adaptedMovie = {...movie,
       filmInfo: {
-        title: movie['film_info'].title,
-        alternativeTitle: movie['film_info']['alternative_title'],
-        totalRating: movie['film_info']['total_rating'],
-        poster: movie['film_info'].poster,
-        ageRating: movie['film_info']['age_rating'],
-        director: movie['film_info'].director,
-        writers: movie['film_info'].writers,
-        actors: movie['film_info'].actors,
+        title: filmInfo.title,
+        alternativeTitle: filmInfo['alternative_title'],
+        totalRating: filmInfo['total_rating'],
+        poster: filmInfo.poster,
+        ageRating: filmInfo['age_rating'],
+        director: filmInfo.director,
+        writers: filmInfo.writers,
+        actors: filmInfo.actors,
         release: {
-          date: movie['film_info'].release.date,
-          releaseCountry: movie['film_info'].release['release_country'],
+          date:filmInfo.release.date,
+          releaseCountry: filmInfo.release['release_country'],
         },
-        duration: movie['film_info'].duration,
-        genre: movie['film_info'].genre,
-        description: movie['film_info'].description,
+        duration: filmInfo.duration,
+        genre: filmInfo.genre,
+        description: filmInfo.description,
       },
       userDetails: {
-        watchlist: movie['user_details'].watchlist,
-        alreadyWatched: movie['user_details'].already_watched,
-        watchingDate: movie['user_details'].watching_date,
-        favorite: movie['user_details'].favorite,
+        watchlist: userDetails.watchlist,
+        alreadyWatched: userDetails.already_watched,
+        watchingDate: userDetails.watching_date,
+        favorite: userDetails.favorite,
       }
     };
 

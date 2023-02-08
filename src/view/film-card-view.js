@@ -1,9 +1,8 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeReleaseDate } from '../utils/utile.js';
 import { convertTimeFormat } from '../utils/utile.js';
-import { UpdateType } from '../const.js';
 
-function createFilmCardTemplate({comments, filmInfo: {title, poster, totalRating, release, genre, duration, description}, userDetails }) {
+function createFilmCardTemplate({comments, filmInfo: {title, poster, totalRating, release, genre, duration, description}, userDetails }, {isDisabled}) {
   const releaseYear = humanizeReleaseDate(release.date).slice(-4);
   const filmDuration = convertTimeFormat(duration);
   const filmDescription = description.length > 140 ? `${description.slice(0, 139)}...` : description;
@@ -26,45 +25,58 @@ function createFilmCardTemplate({comments, filmInfo: {title, poster, totalRating
         <span class="film-card__comments">${comments.length} comments</span>
        </a>
        <div class="film-card__controls">
-         <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${watchlistClassName}" type="button">Add to watchlist</button>
-         <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${alreadyWatchedClassName}" type="button">Mark as watched</button>
-         <button class="film-card__controls-item film-card__controls-item--favorite ${favoriteClassName}" type="button">Mark as favorite</button>
+         <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${watchlistClassName}" type="button" ${isDisabled ? 'disabled' : ''}>Add to watchlist</button>
+         <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${alreadyWatchedClassName}" type="button" ${isDisabled ? 'disabled' : ''}>Mark as watched</button>
+         <button class="film-card__controls-item film-card__controls-item--favorite ${favoriteClassName}" type="button" ${isDisabled ? 'disabled' : ''}>Mark as favorite</button>
        </div>
      </article>`
   );
 }
 
-export default class FilmCardView extends AbstractView {
+export default class FilmCardView extends AbstractStatefulView {
   #movieData = null;
+  #handleFilmCardClick = null;
   #handleFavoriteClick = null;
   #handleWatchlistClick = null;
   #handleAlreadyWatchedClick = null;
+  #initialState = {isDisabled: false};
 
   constructor({movieData, onFilmCardClick, onAlreadyWatchedClick, onFavoriteClick, onWatchlistClick}) {
     super();
     this.#movieData = movieData;
+    this.#handleFilmCardClick = onFilmCardClick;
     this.#handleFavoriteClick = onFavoriteClick;
     this.#handleWatchlistClick = onWatchlistClick;
     this.#handleAlreadyWatchedClick = onAlreadyWatchedClick;
-    this.element.querySelector('.film-card__link').addEventListener('click', onFilmCardClick);
+
+    this._setState(this.#initialState);
+    this._restoreHandlers();
+  }
+
+  _restoreHandlers() {
+    this.element.querySelector('.film-card__link').addEventListener('click', this.#filmCardClickHandler);
     this.element.querySelector('.film-card__controls-item--mark-as-watched').addEventListener('click', this.#alreadyWatchedClickHandler);
     this.element.querySelector('.film-card__controls-item--add-to-watchlist').addEventListener('click',this.#watchlistClickHandler);
     this.element.querySelector('.film-card__controls-item--favorite').addEventListener('click', this.#favoriteClickHandler);
   }
 
   get template() {
-    return createFilmCardTemplate(this.#movieData);
+    return createFilmCardTemplate(this.#movieData, this._state);
   }
 
+  #filmCardClickHandler = () => {
+    this.#handleFilmCardClick();
+  };
+
   #favoriteClickHandler = () => {
-    this.#handleFavoriteClick(UpdateType.MINOR);
+    this.#handleFavoriteClick();
   };
 
   #watchlistClickHandler = () => {
-    this.#handleWatchlistClick(UpdateType.MINOR);
+    this.#handleWatchlistClick();
   };
 
   #alreadyWatchedClickHandler = () => {
-    this.#handleAlreadyWatchedClick(UpdateType.MINOR);
+    this.#handleAlreadyWatchedClick();
   };
 }
