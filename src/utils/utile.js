@@ -14,16 +14,11 @@ export function humanizeReleaseDate(releaseDate) {
 }
 
 export function humanizeCommentDate(commentDate) {
-  /*return commentDate ? dayjs(commentDate).format(COMMENT_DATE_FORMAT) : '';*/
   return dayjs(commentDate).fromNow();
 }
 
 export function convertTimeFormat(minutes) {
   return `${parseInt(minutes / 60, 10)}h ${parseInt(minutes % 60, 10)}min`;
-}
-
-export function updateItem(items, update) {
-  return items.map((item) => item.id === update.id ? update : item);
 }
 
 export function sortMovieDateDown(movieA, movieB) {
