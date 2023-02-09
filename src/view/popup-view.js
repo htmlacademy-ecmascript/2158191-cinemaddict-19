@@ -115,7 +115,7 @@ export default class PopupView extends AbstractView {
         isDisabled: false,
       });
     };
-    this.#popupFilmInfoButtons.shake(resetFormState);
+    this.#popupNewCommentView.shake(resetFormState);
   }
 
   setAbortingDeleteComment(comment) {

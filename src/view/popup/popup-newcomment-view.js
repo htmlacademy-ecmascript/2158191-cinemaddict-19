@@ -71,7 +71,7 @@ export default class PopupNewCommentView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     const {emotion} = this._state;
-    if (evt.ctrlKey && evt.key === 'Enter') {
+    if (evt.ctrlKey || evt.metaKey && evt.key === 'Enter') {
       this.#handleFormSubmit({
         emotion,
         comment: document.querySelector('.film-details__comment-input').value,
